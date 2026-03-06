@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TETRA | Healthcare Dashboard</title>
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
+    <style>
+        :root {
+            --hc-primary: #1a9a82;
+            --hc-bg: #f4f7f9;
+            --hc-border: #e5e7eb;
+            --hc-text: #111827;
+            --hc-muted: #6b7280;
+            --white: #ffffff;
+            --separator: #d1d5db;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--hc-bg); 
+            color: var(--hc-text); 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh;
+        }
+
+        header {
+            background: var(--white);
+            padding: 0 2.5rem;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--hc-border);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-box { width: 28px; height: 28px; background: var(--hc-primary); border-radius: 6px; }
+        .logo-area h1 { font-size: 1.1rem; margin: 0; color: var(--hc-primary); }
+
+        nav { display: flex; gap: 8px; }
+        .nav-btn {
+            text-decoration: none; color: var(--hc-muted); font-size: 0.85rem; font-weight: 600;
+            padding: 8px 16px; border-radius: 8px; transition: 0.2s;
+            background: none; border: none; cursor: pointer;
+        }
+        .nav-btn.active { background: var(--hc-primary); color: white; }
+
+        .dashboard-wrapper {
+            padding: 6rem 2.5rem 4rem 2.5rem; 
+            max-width: 1650px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* --- THE FIXED GRID LOGIC --- */
+        .grid-container {
+            background: var(--white); 
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid var(--hc-border);
+            display: grid;
+            /* 8 Columns Total */
+            grid-template-columns: 1.8fr 1.2fr 1fr 1.3fr 1fr 1.5fr 1.5fr 1.5fr;
+            overflow: hidden;
+        }
+
+        .header-cell {
+            background: #f9fafb; 
+            border-bottom: 2px solid var(--hc-border);
+            font-weight: 700; font-size: 0.75rem; text-transform: uppercase; color: var(--hc-muted);
+            padding: 16px 20px; 
+            position: sticky; 
+            top: 70px; 
+            z-index: 50;
+        }
+
+        .spanning-label {
+            grid-row: span 4; /* Spans 4 sub-rows of runs */
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; padding: 20px; font-weight: 700;
+            color: var(--hc-primary); background: #fafdfd;
+            border-right: 1px solid var(--hc-border);
+            border-bottom: 2px solid var(--separator);
+        }
+
+        .cell {
+            padding: 14px 20px; border-bottom: 1px solid #f3f4f6;
+            display: flex; align-items: center; font-size: 0.9rem; color: var(--hc-text);
+            background: white;
+        }
+
+        .run-text { font-weight: 600; color: var(--hc-text); }
+        .status-pass { color: #10b981; font-weight: 800; }
+        .status-fail { color: #ef4444; font-weight: 800; }
+        .block-end { border-bottom: 2px solid var(--separator); }
+
+        footer {
+            margin-top: auto; padding: 1.5rem 2.5rem; background: white; border-top: 1px solid var(--hc-border);
+            display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--hc-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#" class="logo-area">
+            <div class="logo-box"></div>
+            <h1>TETRA</h1>
+        </a>
+        <nav>
+            <a href="#" class="nav-btn">Home</a>
+            <a href="#" class="nav-btn active">Dashboard</a>
+            <button class="nav-btn">Workspace</button>
+            <button class="nav-btn">Profile</button>
+        </nav>
+    </header>
+
+    <main class="dashboard-wrapper">
+        <div class="grid-container" id="grid">
+            <!-- HEADERS (Columns 1-8) -->
+            <div class="header-cell">Checkout Name</div>
+            <div class="header-cell">Date</div>
+            <div class="header-cell">Run</div>
+            <div class="header-cell">Time Reported</div>
+            <div class="header-cell">Status</div>
+            <div class="header-cell">Requested By</div>
+            <div class="header-cell">Email Attachment</div>
+            <div class="header-cell">Exception If Any</div>
+        </div>
+    </main>
+
+    <footer>
+        <div>&copy; 2026 TETRA Analytics</div>
+        <div id="timestamp"></div>
+    </footer>
+
+    <script>
+        document.getElementById('timestamp').innerText = `Last Refreshed: ${new Date().toLocaleTimeString()}`;
+
+        const checkouts = ["Alpha Clinical", "Beta Oncology", "Gamma Radiology"];
+        const runs = ["EMC", "Evening", "ONC", "ADhoc"];
+        const grid = document.getElementById('grid');
+
+        checkouts.forEach((name, index) => {
+            const date = `2026/03/0${index + 5}`;
+            
+            // 1. Create Name Label (Col 1)
+            const nameEl = document.createElement('div');
+            nameEl.className = 'spanning-label';
+            nameEl.innerText = name;
+            grid.appendChild(nameEl);
+
+            // 2. Create Date Label (Col 2)
+            const dateEl = document.createElement('div');
+            dateEl.className = 'spanning-label';
+            dateEl.innerText = date;
+            grid.appendChild(dateEl);
+
+            // 3. Create 4 Rows for the runs (Cols 3-8)
+            runs.forEach((run, rIndex) => {
+                const isFail = Math.random() > 0.85;
+                const isLast = (rIndex === 3) ? 'block-end' : '';
+
+                // These 6 items will fill the remaining columns in the current row
+                const rowData = [
+                    { class: `cell run-text ${isLast}`, text: run },
+                    { class: `cell ${isLast}`, text: `09:15:0${rIndex}` },
+                    { class: `cell ${isLast} ${isFail ? 'status-fail' : 'status-pass'}`, text: isFail ? 'Fail' : 'Pass' },
+                    { class: `cell ${isLast}`, text: 'Admin' },
+                    { class: `cell ${isLast}`, text: `hc_log_${run}.pdf` },
+                    { class: `cell ${isLast}`, text: isFail ? 'ERR_TIMEOUT' : 'None', style: isFail ? 'color:#ef4444' : '' }
+                ];
+
+                rowData.forEach(data => {
+                    const el = document.createElement('div');
+                    el.className = data.class;
+                    el.innerText = data.text;
+                    if(data.style) el.style = data.style;
+                    grid.appendChild(el);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
