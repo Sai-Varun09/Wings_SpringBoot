@@ -1,47 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
+
 <title>TETRA Healthcare Dashboard</title>
 
 <style>
 
-:root{
---primary:#1a9a82;
---pass:#2e7d32;
---fail:#d32f2f;
---adhoc:#1565c0;
---bg:#f4f7f9;
---border:#e5e7eb;
---text:#1f2937;
---white:#ffffff;
-}
-
 body{
-font-family: Arial, Helvetica, sans-serif;
-background:var(--bg);
+font-family: Arial;
+background:#f4f7f9;
 margin:0;
 }
 
-/* HEADER */
-
 header{
 background:white;
-height:70px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:0 40px;
-border-bottom:1px solid var(--border);
-}
-
-.logo{
+padding:20px 40px;
+border-bottom:1px solid #ddd;
 font-size:20px;
-font-weight:700;
-color:var(--primary);
+font-weight:bold;
+color:#1a9a82;
 }
-
-/* DASHBOARD */
 
 .container{
 padding:30px 40px;
@@ -58,124 +36,102 @@ margin-bottom:25px;
 
 .card{
 background:white;
-border-radius:10px;
 padding:20px;
-box-shadow:0 5px 15px rgba(0,0,0,0.05);
-border-left:6px solid var(--primary);
+border-radius:8px;
+box-shadow:0 4px 10px rgba(0,0,0,0.05);
 }
 
 .card h3{
 margin:0;
 font-size:14px;
-color:#6b7280;
+color:#777;
 }
 
 .card p{
 margin:5px 0 0 0;
 font-size:28px;
-font-weight:700;
+font-weight:bold;
 }
-
-.pass{border-left-color:var(--pass);}
-.fail{border-left-color:var(--fail);}
-.adhoc{border-left-color:var(--adhoc);}
 
 /* TABLE */
-
-.table-container{
-background:white;
-border-radius:12px;
-overflow:hidden;
-box-shadow:0 10px 25px rgba(0,0,0,0.05);
-border:1px solid var(--border);
-}
 
 table{
 width:100%;
 border-collapse:collapse;
-}
-
-thead{
-background:#f9fafb;
+background:white;
+border-radius:10px;
+overflow:hidden;
 }
 
 th{
+background:#f9fafb;
 text-align:left;
-padding:15px;
+padding:14px;
 font-size:13px;
-color:#6b7280;
-border-bottom:2px solid var(--border);
+border-bottom:2px solid #e5e7eb;
 }
 
 td{
-padding:14px;
-border-bottom:1px solid #f1f1f1;
-font-size:14px;
+padding:12px;
+border-bottom:1px solid #eee;
 }
 
 .checkout{
-font-weight:700;
-color:var(--primary);
-}
-
-.status-pass{
-color:var(--pass);
-font-weight:700;
-}
-
-.status-fail{
-color:var(--fail);
-font-weight:700;
+font-weight:bold;
+color:#1a9a82;
 }
 
 .run{
 font-weight:600;
 }
 
-tbody tr:hover{
-background:#f8fbfb;
+.pass{
+color:green;
+font-weight:bold;
+}
+
+.fail{
+color:red;
+font-weight:bold;
 }
 
 </style>
+
 </head>
 
 <body>
 
 <header>
-<div class="logo">TETRA Healthcare Dashboard</div>
+TETRA Healthcare Dashboard
 </header>
 
 <div class="container">
 
 <!-- SUMMARY -->
-
 <div class="summary">
 
 <div class="card">
 <h3>Total Checkouts</h3>
-<p id="totalCheckouts">0</p>
+<p>{{ total_checkouts }}</p>
 </div>
 
-<div class="card pass">
+<div class="card">
 <h3>Total Passed</h3>
-<p id="totalPass">0</p>
+<p>{{ total_pass }}</p>
 </div>
 
-<div class="card fail">
+<div class="card">
 <h3>Total Failed</h3>
-<p id="totalFail">0</p>
+<p>{{ total_fail }}</p>
 </div>
 
-<div class="card adhoc">
+<div class="card">
 <h3>Adhoc Runs</h3>
-<p id="adhocRuns">0</p>
+<p>{{ adhoc_runs }}</p>
 </div>
 
 </div>
 
-<!-- TABLE -->
-
-<div class="table-container">
 
 <table>
 
@@ -192,58 +148,115 @@ background:#f8fbfb;
 </tr>
 </thead>
 
-<tbody id="tableBody">
+<tbody>
 
-<!-- Flask will generate rows here -->
-
-{% for row in data %}
+<!-- Alpha Clinical -->
 
 <tr>
-<td class="checkout" rowspan="4">{{row.checkout}}</td>
-<td rowspan="4">{{row.date}}</td>
+
+<td rowspan="4" class="checkout">Alpha Clinical</td>
+<td rowspan="4">{{date}}</td>
 
 <td class="run">EMC</td>
-<td>{{row.emc_time}}</td>
-<td class="status-{{row.emc_status | lower}}">{{row.emc_status}}</td>
-<td>{{row.requested_by}}</td>
-<td>{{row.emc_attachment}}</td>
-<td>{{row.emc_exception}}</td>
+<td>{{data.alpha.emc.time}}</td>
+<td class="{{data.alpha.emc.status|lower}}">
+{{data.alpha.emc.status}}
+</td>
+<td>{{data.alpha.emc.requested}}</td>
+<td>{{data.alpha.emc.file}}</td>
+<td>{{data.alpha.emc.exception}}</td>
+
+</tr>
+
+
+<tr>
+
+<td class="run">Evening</td>
+<td>{{data.alpha.evening.time}}</td>
+<td class="{{data.alpha.evening.status|lower}}">
+{{data.alpha.evening.status}}
+</td>
+<td>{{data.alpha.evening.requested}}</td>
+<td>{{data.alpha.evening.file}}</td>
+<td>{{data.alpha.evening.exception}}</td>
+
+</tr>
+
+
+<tr>
+
+<td class="run">ONC</td>
+<td>{{data.alpha.onc.time}}</td>
+<td class="{{data.alpha.onc.status|lower}}">
+{{data.alpha.onc.status}}
+</td>
+<td>{{data.alpha.onc.requested}}</td>
+<td>{{data.alpha.onc.file}}</td>
+<td>{{data.alpha.onc.exception}}</td>
+
+</tr>
+
+
+<tr>
+
+<td class="run">ADhoc</td>
+<td>{{data.alpha.adhoc.time}}</td>
+<td class="{{data.alpha.adhoc.status|lower}}">
+{{data.alpha.adhoc.status}}
+</td>
+<td>{{data.alpha.adhoc.requested}}</td>
+<td>{{data.alpha.adhoc.file}}</td>
+<td>{{data.alpha.adhoc.exception}}</td>
+
+</tr>
+
+
+<!-- Beta Oncology -->
+
+<tr>
+
+<td rowspan="4" class="checkout">Beta Oncology</td>
+<td rowspan="4">{{date}}</td>
+
+<td class="run">EMC</td>
+<td>{{data.beta.emc.time}}</td>
+<td>{{data.beta.emc.status}}</td>
+<td>{{data.beta.emc.requested}}</td>
+<td>{{data.beta.emc.file}}</td>
+<td>{{data.beta.emc.exception}}</td>
+
 </tr>
 
 <tr>
 <td class="run">Evening</td>
-<td>{{row.evening_time}}</td>
-<td class="status-{{row.evening_status | lower}}">{{row.evening_status}}</td>
-<td>{{row.requested_by}}</td>
-<td>{{row.evening_attachment}}</td>
-<td>{{row.evening_exception}}</td>
+<td>{{data.beta.evening.time}}</td>
+<td>{{data.beta.evening.status}}</td>
+<td>{{data.beta.evening.requested}}</td>
+<td>{{data.beta.evening.file}}</td>
+<td>{{data.beta.evening.exception}}</td>
 </tr>
 
 <tr>
 <td class="run">ONC</td>
-<td>{{row.onc_time}}</td>
-<td class="status-{{row.onc_status | lower}}">{{row.onc_status}}</td>
-<td>{{row.requested_by}}</td>
-<td>{{row.onc_attachment}}</td>
-<td>{{row.onc_exception}}</td>
+<td>{{data.beta.onc.time}}</td>
+<td>{{data.beta.onc.status}}</td>
+<td>{{data.beta.onc.requested}}</td>
+<td>{{data.beta.onc.file}}</td>
+<td>{{data.beta.onc.exception}}</td>
 </tr>
 
 <tr>
 <td class="run">ADhoc</td>
-<td>{{row.adhoc_time}}</td>
-<td class="status-{{row.adhoc_status | lower}}">{{row.adhoc_status}}</td>
-<td>{{row.requested_by}}</td>
-<td>{{row.adhoc_attachment}}</td>
-<td>{{row.adhoc_exception}}</td>
+<td>{{data.beta.adhoc.time}}</td>
+<td>{{data.beta.adhoc.status}}</td>
+<td>{{data.beta.adhoc.requested}}</td>
+<td>{{data.beta.adhoc.file}}</td>
+<td>{{data.beta.adhoc.exception}}</td>
 </tr>
-
-{% endfor %}
 
 </tbody>
 
 </table>
-
-</div>
 
 </div>
 
