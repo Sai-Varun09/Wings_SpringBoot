@@ -1,33 +1,106 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TETRA | Healthcare Dashboard</title>
 
-<title>TETRA Healthcare Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-body{
-font-family: Arial;
-background:#f4f7f9;
-margin:0;
+:root{
+--hc-primary:#1a9a82;
+--hc-success:#16a34a;
+--hc-fail:#dc2626;
+--hc-bg:#f4f7f9;
+--hc-border:#e5e7eb;
+--hc-muted:#6b7280;
+--white:#ffffff;
+--separator:#d1d5db;
 }
+
+/* GLOBAL */
+
+body{
+font-family:'Inter',sans-serif;
+background:var(--hc-bg);
+margin:0;
+color:#111827;
+display:flex;
+flex-direction:column;
+min-height:100vh;
+}
+
+/* HEADER */
 
 header{
 background:white;
-padding:20px 40px;
-border-bottom:1px solid #ddd;
-font-size:20px;
-font-weight:bold;
-color:#1a9a82;
+height:70px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 2rem;
+border-bottom:1px solid var(--hc-border);
+position:fixed;
+top:0;
+width:100%;
+z-index:1000;
 }
 
-.container{
-padding:30px 40px;
+.logo-area{
+display:flex;
+align-items:center;
+gap:10px;
+text-decoration:none;
+}
+
+.logo-box{
+width:28px;
+height:28px;
+background:var(--hc-primary);
+border-radius:6px;
+}
+
+.logo-area h1{
+margin:0;
+font-size:1.1rem;
+color:var(--hc-primary);
+}
+
+nav{
+display:flex;
+gap:10px;
+}
+
+.nav-btn{
+padding:8px 16px;
+border-radius:8px;
+font-size:0.85rem;
+font-weight:600;
+border:none;
+background:none;
+cursor:pointer;
+color:var(--hc-muted);
+}
+
+.nav-btn.active{
+background:var(--hc-primary);
+color:white;
+}
+
+/* MAIN WRAPPER */
+
+.dashboard-wrapper{
+padding:6rem 2rem 3rem 2rem;
+max-width:1600px;
+margin:auto;
+width:100%;
 }
 
 /* SUMMARY CARDS */
 
-.summary{
+.summary-container{
 display:grid;
 grid-template-columns:repeat(4,1fr);
 gap:20px;
@@ -37,228 +110,248 @@ margin-bottom:25px;
 .card{
 background:white;
 padding:20px;
-border-radius:8px;
-box-shadow:0 4px 10px rgba(0,0,0,0.05);
+border-radius:12px;
+box-shadow:0 6px 15px rgba(0,0,0,0.05);
+border:1px solid var(--hc-border);
 }
 
-.card h3{
-margin:0;
-font-size:14px;
-color:#777;
-}
-
-.card p{
-margin:5px 0 0 0;
-font-size:28px;
-font-weight:bold;
-}
-
-/* TABLE */
-
-table{
-width:100%;
-border-collapse:collapse;
-background:white;
-border-radius:10px;
-overflow:hidden;
-}
-
-th{
-background:#f9fafb;
-text-align:left;
-padding:14px;
-font-size:13px;
-border-bottom:2px solid #e5e7eb;
-}
-
-td{
-padding:12px;
-border-bottom:1px solid #eee;
-}
-
-.checkout{
-font-weight:bold;
-color:#1a9a82;
-}
-
-.run{
+.card-title{
+font-size:0.8rem;
+color:var(--hc-muted);
+margin-bottom:10px;
 font-weight:600;
 }
 
-.pass{
-color:green;
-font-weight:bold;
+.card-value{
+font-size:1.8rem;
+font-weight:700;
 }
 
-.fail{
-color:red;
-font-weight:bold;
+.total{color:var(--hc-primary)}
+.pass{color:var(--hc-success)}
+.fail{color:var(--hc-fail)}
+.adhoc{color:#2563eb}
+
+/* GRID TABLE */
+
+.grid-container{
+background:white;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.05);
+border:1px solid var(--hc-border);
+display:grid;
+
+grid-template-columns:
+1.8fr 1.2fr 1fr 1.3fr 1fr 1.5fr 1.5fr 1.5fr;
+
+max-height:600px;
+overflow-y:auto;
+}
+
+/* HEADER */
+
+.header-cell{
+background:#f9fafb;
+font-weight:700;
+font-size:0.75rem;
+text-transform:uppercase;
+color:var(--hc-muted);
+padding:16px 20px;
+border-bottom:2px solid var(--hc-border);
+
+position:sticky;
+top:0;
+z-index:10;
+}
+
+/* GROUP LABEL */
+
+.spanning-label{
+grid-row:span 4;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+padding:20px;
+font-weight:700;
+color:var(--hc-primary);
+background:#fafdfd;
+border-right:1px solid var(--hc-border);
+border-bottom:2px solid var(--separator);
+}
+
+/* CELLS */
+
+.cell{
+padding:14px 20px;
+border-bottom:1px solid #f3f4f6;
+display:flex;
+align-items:center;
+font-size:0.9rem;
+}
+
+.run-text{
+font-weight:600;
+}
+
+.status-pass{
+color:var(--hc-success);
+font-weight:700;
+}
+
+.status-fail{
+color:var(--hc-fail);
+font-weight:700;
+}
+
+.block-end{
+border-bottom:2px solid var(--separator);
+}
+
+/* FOOTER */
+
+footer{
+margin-top:auto;
+background:white;
+border-top:1px solid var(--hc-border);
+padding:1rem 2rem;
+display:flex;
+justify-content:space-between;
+font-size:0.8rem;
+color:var(--hc-muted);
 }
 
 </style>
-
 </head>
 
 <body>
 
 <header>
-TETRA Healthcare Dashboard
+<a href="#" class="logo-area">
+<div class="logo-box"></div>
+<h1>TETRA</h1>
+</a>
+
+<nav>
+<button class="nav-btn">Home</button>
+<button class="nav-btn active">Dashboard</button>
+<button class="nav-btn">Workspace</button>
+<button class="nav-btn">Profile</button>
+</nav>
 </header>
 
-<div class="container">
+<main class="dashboard-wrapper">
 
 <!-- SUMMARY -->
-<div class="summary">
+<div class="summary-container">
 
 <div class="card">
-<h3>Total Checkouts</h3>
-<p>{{ total_checkouts }}</p>
-</div>
-
-<div class="card">
-<h3>Total Passed</h3>
-<p>{{ total_pass }}</p>
+<div class="card-title">Total Checkouts</div>
+<div class="card-value total" id="totalCount">0</div>
 </div>
 
 <div class="card">
-<h3>Total Failed</h3>
-<p>{{ total_fail }}</p>
+<div class="card-title">Pass</div>
+<div class="card-value pass" id="passCount">0</div>
 </div>
 
 <div class="card">
-<h3>Adhoc Runs</h3>
-<p>{{ adhoc_runs }}</p>
+<div class="card-title">Fail</div>
+<div class="card-value fail" id="failCount">0</div>
+</div>
+
+<div class="card">
+<div class="card-title">Adhoc Runs Today</div>
+<div class="card-value adhoc" id="adhocCount">0</div>
 </div>
 
 </div>
 
+<!-- GRID TABLE -->
+<div class="grid-container" id="grid">
 
-<table>
-
-<thead>
-<tr>
-<th>Checkout Name</th>
-<th>Date</th>
-<th>Run</th>
-<th>Time Reported</th>
-<th>Status</th>
-<th>Requested By</th>
-<th>Email Attachment</th>
-<th>Exception</th>
-</tr>
-</thead>
-
-<tbody>
-
-<!-- Alpha Clinical -->
-
-<tr>
-
-<td rowspan="4" class="checkout">Alpha Clinical</td>
-<td rowspan="4">{{date}}</td>
-
-<td class="run">EMC</td>
-<td>{{data.alpha.emc.time}}</td>
-<td class="{{data.alpha.emc.status|lower}}">
-{{data.alpha.emc.status}}
-</td>
-<td>{{data.alpha.emc.requested}}</td>
-<td>{{data.alpha.emc.file}}</td>
-<td>{{data.alpha.emc.exception}}</td>
-
-</tr>
-
-
-<tr>
-
-<td class="run">Evening</td>
-<td>{{data.alpha.evening.time}}</td>
-<td class="{{data.alpha.evening.status|lower}}">
-{{data.alpha.evening.status}}
-</td>
-<td>{{data.alpha.evening.requested}}</td>
-<td>{{data.alpha.evening.file}}</td>
-<td>{{data.alpha.evening.exception}}</td>
-
-</tr>
-
-
-<tr>
-
-<td class="run">ONC</td>
-<td>{{data.alpha.onc.time}}</td>
-<td class="{{data.alpha.onc.status|lower}}">
-{{data.alpha.onc.status}}
-</td>
-<td>{{data.alpha.onc.requested}}</td>
-<td>{{data.alpha.onc.file}}</td>
-<td>{{data.alpha.onc.exception}}</td>
-
-</tr>
-
-
-<tr>
-
-<td class="run">ADhoc</td>
-<td>{{data.alpha.adhoc.time}}</td>
-<td class="{{data.alpha.adhoc.status|lower}}">
-{{data.alpha.adhoc.status}}
-</td>
-<td>{{data.alpha.adhoc.requested}}</td>
-<td>{{data.alpha.adhoc.file}}</td>
-<td>{{data.alpha.adhoc.exception}}</td>
-
-</tr>
-
-
-<!-- Beta Oncology -->
-
-<tr>
-
-<td rowspan="4" class="checkout">Beta Oncology</td>
-<td rowspan="4">{{date}}</td>
-
-<td class="run">EMC</td>
-<td>{{data.beta.emc.time}}</td>
-<td>{{data.beta.emc.status}}</td>
-<td>{{data.beta.emc.requested}}</td>
-<td>{{data.beta.emc.file}}</td>
-<td>{{data.beta.emc.exception}}</td>
-
-</tr>
-
-<tr>
-<td class="run">Evening</td>
-<td>{{data.beta.evening.time}}</td>
-<td>{{data.beta.evening.status}}</td>
-<td>{{data.beta.evening.requested}}</td>
-<td>{{data.beta.evening.file}}</td>
-<td>{{data.beta.evening.exception}}</td>
-</tr>
-
-<tr>
-<td class="run">ONC</td>
-<td>{{data.beta.onc.time}}</td>
-<td>{{data.beta.onc.status}}</td>
-<td>{{data.beta.onc.requested}}</td>
-<td>{{data.beta.onc.file}}</td>
-<td>{{data.beta.onc.exception}}</td>
-</tr>
-
-<tr>
-<td class="run">ADhoc</td>
-<td>{{data.beta.adhoc.time}}</td>
-<td>{{data.beta.adhoc.status}}</td>
-<td>{{data.beta.adhoc.requested}}</td>
-<td>{{data.beta.adhoc.file}}</td>
-<td>{{data.beta.adhoc.exception}}</td>
-</tr>
-
-</tbody>
-
-</table>
+<div class="header-cell">Checkout Name</div>
+<div class="header-cell">Date</div>
+<div class="header-cell">Run</div>
+<div class="header-cell">Time Reported</div>
+<div class="header-cell">Status</div>
+<div class="header-cell">Requested By</div>
+<div class="header-cell">Email Attachment</div>
+<div class="header-cell">Exception If Any</div>
 
 </div>
+
+</main>
+
+<footer>
+<div>© 2026 TETRA Analytics</div>
+<div id="timestamp"></div>
+</footer>
+
+<script>
+
+document.getElementById('timestamp').innerText =
+`Last Refreshed: ${new Date().toLocaleTimeString()}`;
+
+const checkouts=["Alpha Clinical","Beta Oncology","Gamma Radiology"];
+const runs=["EMC","Evening","ONC","ADhoc"];
+
+const grid=document.getElementById("grid");
+
+let pass=0;
+let fail=0;
+let adhoc=0;
+
+checkouts.forEach((name,index)=>{
+
+const date=`2026/03/0${index+5}`;
+
+const nameEl=document.createElement("div");
+nameEl.className="spanning-label";
+nameEl.innerText=name;
+grid.appendChild(nameEl);
+
+const dateEl=document.createElement("div");
+dateEl.className="spanning-label";
+dateEl.innerText=date;
+grid.appendChild(dateEl);
+
+runs.forEach((run,rIndex)=>{
+
+const isFail=Math.random()>0.85;
+const isLast=(rIndex===3)?"block-end":"";
+
+if(run==="ADhoc") adhoc++;
+
+if(isFail) fail++;
+else pass++;
+
+const rowData=[
+{class:`cell run-text ${isLast}`,text:run},
+{class:`cell ${isLast}`,text:`09:15:0${rIndex}`},
+{class:`cell ${isLast} ${isFail?'status-fail':'status-pass'}`,text:isFail?'Fail':'Pass'},
+{class:`cell ${isLast}`,text:'Admin'},
+{class:`cell ${isLast}`,text:`hc_log_${run}.pdf`},
+{class:`cell ${isLast}`,text:isFail?'ERR_TIMEOUT':'None'}
+];
+
+rowData.forEach(data=>{
+const el=document.createElement("div");
+el.className=data.class;
+el.innerText=data.text;
+grid.appendChild(el);
+});
+
+});
+
+});
+
+document.getElementById("totalCount").innerText=checkouts.length;
+document.getElementById("passCount").innerText=pass;
+document.getElementById("failCount").innerText=fail;
+document.getElementById("adhocCount").innerText=adhoc;
+
+</script>
 
 </body>
 </html>
