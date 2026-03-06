@@ -3,222 +3,124 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TETRA | Healthcare Dashboard</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<title>TETRA Healthcare Dashboard</title>
 
 <style>
 
 :root{
---hc-primary:#1a9a82;
---hc-success:#16a34a;
---hc-fail:#dc2626;
---hc-bg:#f4f7f9;
---hc-border:#e5e7eb;
---hc-muted:#6b7280;
---white:#ffffff;
---separator:#d1d5db;
+--primary:#1a9a82;
+--pass:#16a34a;
+--fail:#dc2626;
+--bg:#f4f7f9;
+--card:#ffffff;
+--border:#e5e7eb;
+--text:#111827;
 }
-
-/* GLOBAL */
 
 body{
-font-family:'Inter',sans-serif;
-background:var(--hc-bg);
+font-family: Arial, Helvetica, sans-serif;
+background:var(--bg);
 margin:0;
-color:#111827;
-display:flex;
-flex-direction:column;
-min-height:100vh;
 }
 
-/* HEADER */
-
 header{
-background:white;
 height:70px;
+background:white;
+border-bottom:1px solid var(--border);
 display:flex;
 align-items:center;
 justify-content:space-between;
-padding:0 2rem;
-border-bottom:1px solid var(--hc-border);
-position:fixed;
-top:0;
-width:100%;
-z-index:1000;
+padding:0 40px;
 }
 
-.logo-area{
-display:flex;
-align-items:center;
-gap:10px;
-text-decoration:none;
+.logo{
+font-weight:700;
+color:var(--primary);
+font-size:20px;
 }
 
-.logo-box{
-width:28px;
-height:28px;
-background:var(--hc-primary);
-border-radius:6px;
-}
-
-.logo-area h1{
-margin:0;
-font-size:1.1rem;
-color:var(--hc-primary);
-}
-
-nav{
-display:flex;
-gap:10px;
-}
-
-.nav-btn{
-padding:8px 16px;
-border-radius:8px;
-font-size:0.85rem;
-font-weight:600;
-border:none;
-background:none;
-cursor:pointer;
-color:var(--hc-muted);
-}
-
-.nav-btn.active{
-background:var(--hc-primary);
-color:white;
-}
-
-/* MAIN WRAPPER */
-
-.dashboard-wrapper{
-padding:6rem 2rem 3rem 2rem;
-max-width:1600px;
+.dashboard{
+padding:100px 40px 40px;
+max-width:1500px;
 margin:auto;
-width:100%;
 }
 
 /* SUMMARY CARDS */
 
-.summary-container{
+.summary{
 display:grid;
 grid-template-columns:repeat(4,1fr);
 gap:20px;
-margin-bottom:25px;
+margin-bottom:30px;
 }
 
 .card{
-background:white;
+background:var(--card);
 padding:20px;
-border-radius:12px;
-box-shadow:0 6px 15px rgba(0,0,0,0.05);
-border:1px solid var(--hc-border);
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+border:1px solid var(--border);
 }
 
-.card-title{
-font-size:0.8rem;
-color:var(--hc-muted);
-margin-bottom:10px;
-font-weight:600;
+.card h3{
+margin:0;
+font-size:14px;
+color:#6b7280;
 }
 
-.card-value{
-font-size:1.8rem;
+.card p{
+font-size:28px;
 font-weight:700;
+margin-top:10px;
 }
 
-.total{color:var(--hc-primary)}
-.pass{color:var(--hc-success)}
-.fail{color:var(--hc-fail)}
-.adhoc{color:#2563eb}
+.pass-card p{color:var(--pass)}
+.fail-card p{color:var(--fail)}
+.adhoc-card p{color:#2563eb}
 
-/* GRID TABLE */
+/* TABLE */
 
-.grid-container{
+.table-container{
 background:white;
-border-radius:12px;
-box-shadow:0 10px 25px rgba(0,0,0,0.05);
-border:1px solid var(--hc-border);
-display:grid;
-
-grid-template-columns:
-1.8fr 1.2fr 1fr 1.3fr 1fr 1.5fr 1.5fr 1.5fr;
-
+border-radius:10px;
+border:1px solid var(--border);
+overflow:auto;
 max-height:600px;
-overflow-y:auto;
 }
 
-/* HEADER */
+table{
+width:100%;
+border-collapse:collapse;
+}
 
-.header-cell{
+thead{
 background:#f9fafb;
-font-weight:700;
-font-size:0.75rem;
-text-transform:uppercase;
-color:var(--hc-muted);
-padding:16px 20px;
-border-bottom:2px solid var(--hc-border);
-
 position:sticky;
 top:0;
-z-index:10;
 }
 
-/* GROUP LABEL */
-
-.spanning-label{
-grid-row:span 4;
-display:flex;
-align-items:center;
-justify-content:center;
-text-align:center;
-padding:20px;
-font-weight:700;
-color:var(--hc-primary);
-background:#fafdfd;
-border-right:1px solid var(--hc-border);
-border-bottom:2px solid var(--separator);
+th{
+padding:14px;
+font-size:13px;
+text-align:left;
+border-bottom:2px solid var(--border);
 }
 
-/* CELLS */
-
-.cell{
-padding:14px 20px;
-border-bottom:1px solid #f3f4f6;
-display:flex;
-align-items:center;
-font-size:0.9rem;
+td{
+padding:12px;
+border-bottom:1px solid #f1f5f9;
+font-size:14px;
 }
 
-.run-text{
-font-weight:600;
-}
-
-.status-pass{
-color:var(--hc-success);
+.pass{
+color:var(--pass);
 font-weight:700;
 }
 
-.status-fail{
-color:var(--hc-fail);
+.fail{
+color:var(--fail);
 font-weight:700;
-}
-
-.block-end{
-border-bottom:2px solid var(--separator);
-}
-
-/* FOOTER */
-
-footer{
-margin-top:auto;
-background:white;
-border-top:1px solid var(--hc-border);
-padding:1rem 2rem;
-display:flex;
-justify-content:space-between;
-font-size:0.8rem;
-color:var(--hc-muted);
 }
 
 </style>
@@ -227,129 +129,107 @@ color:var(--hc-muted);
 <body>
 
 <header>
-<a href="#" class="logo-area">
-<div class="logo-box"></div>
-<h1>TETRA</h1>
-</a>
-
-<nav>
-<button class="nav-btn">Home</button>
-<button class="nav-btn active">Dashboard</button>
-<button class="nav-btn">Workspace</button>
-<button class="nav-btn">Profile</button>
-</nav>
+<div class="logo">TETRA Healthcare</div>
 </header>
 
-<main class="dashboard-wrapper">
+<div class="dashboard">
 
 <!-- SUMMARY -->
-<div class="summary-container">
+<div class="summary">
 
 <div class="card">
-<div class="card-title">Total Checkouts</div>
-<div class="card-value total" id="totalCount">0</div>
+<h3>Total Checkouts</h3>
+<p id="totalCount">0</p>
 </div>
 
-<div class="card">
-<div class="card-title">Pass</div>
-<div class="card-value pass" id="passCount">0</div>
+<div class="card pass-card">
+<h3>Total Passed</h3>
+<p id="passCount">0</p>
 </div>
 
-<div class="card">
-<div class="card-title">Fail</div>
-<div class="card-value fail" id="failCount">0</div>
+<div class="card fail-card">
+<h3>Total Failed</h3>
+<p id="failCount">0</p>
 </div>
 
-<div class="card">
-<div class="card-title">Adhoc Runs Today</div>
-<div class="card-value adhoc" id="adhocCount">0</div>
+<div class="card adhoc-card">
+<h3>Adhoc Runs</h3>
+<p id="adhocCount">0</p>
 </div>
-
-</div>
-
-<!-- GRID TABLE -->
-<div class="grid-container" id="grid">
-
-<div class="header-cell">Checkout Name</div>
-<div class="header-cell">Date</div>
-<div class="header-cell">Run</div>
-<div class="header-cell">Time Reported</div>
-<div class="header-cell">Status</div>
-<div class="header-cell">Requested By</div>
-<div class="header-cell">Email Attachment</div>
-<div class="header-cell">Exception If Any</div>
 
 </div>
 
-</main>
+<!-- TABLE -->
 
-<footer>
-<div>© 2026 TETRA Analytics</div>
-<div id="timestamp"></div>
-</footer>
+<div class="table-container">
+
+<table>
+
+<thead>
+<tr>
+<th>Checkout Name</th>
+<th>Date</th>
+<th>Run</th>
+<th>Time Reported</th>
+<th>Status</th>
+<th>Requested By</th>
+<th>Email Attachment</th>
+<th>Exception</th>
+</tr>
+</thead>
+
+<tbody id="tableBody">
+</tbody>
+
+</table>
+
+</div>
+
+</div>
 
 <script>
 
-document.getElementById('timestamp').innerText =
-`Last Refreshed: ${new Date().toLocaleTimeString()}`;
+fetch("/get-data")
+.then(res => res.json())
+.then(data => {
 
-const checkouts=["Alpha Clinical","Beta Oncology","Gamma Radiology"];
-const runs=["EMC","Evening","ONC","ADhoc"];
+let tbody=document.getElementById("tableBody")
 
-const grid=document.getElementById("grid");
+let pass=0
+let fail=0
+let adhoc=0
 
-let pass=0;
-let fail=0;
-let adhoc=0;
+data.forEach(row=>{
 
-checkouts.forEach((name,index)=>{
+let tr=document.createElement("tr")
 
-const date=`2026/03/0${index+5}`;
+if(row.status==="Pass") pass++
+if(row.status==="Fail") fail++
+if(row.run.toLowerCase()==="adhoc") adhoc++
 
-const nameEl=document.createElement("div");
-nameEl.className="spanning-label";
-nameEl.innerText=name;
-grid.appendChild(nameEl);
+tr.innerHTML=`
 
-const dateEl=document.createElement("div");
-dateEl.className="spanning-label";
-dateEl.innerText=date;
-grid.appendChild(dateEl);
+<td>${row.checkout_name}</td>
+<td>${row.date}</td>
+<td>${row.run}</td>
+<td>${row.time}</td>
+<td class="${row.status==='Pass'?'pass':'fail'}">${row.status}</td>
+<td>${row.requested_by}</td>
+<td>${row.attachment}</td>
+<td>${row.exception}</td>
 
-runs.forEach((run,rIndex)=>{
+`
 
-const isFail=Math.random()>0.85;
-const isLast=(rIndex===3)?"block-end":"";
+tbody.appendChild(tr)
 
-if(run==="ADhoc") adhoc++;
+})
 
-if(isFail) fail++;
-else pass++;
+document.getElementById("totalCount").innerText=data.length
+document.getElementById("passCount").innerText=pass
+document.getElementById("failCount").innerText=fail
+document.getElementById("adhocCount").innerText=adhoc
 
-const rowData=[
-{class:`cell run-text ${isLast}`,text:run},
-{class:`cell ${isLast}`,text:`09:15:0${rIndex}`},
-{class:`cell ${isLast} ${isFail?'status-fail':'status-pass'}`,text:isFail?'Fail':'Pass'},
-{class:`cell ${isLast}`,text:'Admin'},
-{class:`cell ${isLast}`,text:`hc_log_${run}.pdf`},
-{class:`cell ${isLast}`,text:isFail?'ERR_TIMEOUT':'None'}
-];
-
-rowData.forEach(data=>{
-const el=document.createElement("div");
-el.className=data.class;
-el.innerText=data.text;
-grid.appendChild(el);
-});
-
-});
-
-});
-
-document.getElementById("totalCount").innerText=checkouts.length;
-document.getElementById("passCount").innerText=pass;
-document.getElementById("failCount").innerText=fail;
-document.getElementById("adhocCount").innerText=adhoc;
+})
 
 </script>
 
