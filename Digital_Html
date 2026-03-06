@@ -1,1 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>TETRA | Healthcare Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--hc-primary:#1a9a82;
+--hc-success:#16a34a;
+--hc-fail:#dc2626;
+--hc-bg:#f4f7f9;
+--hc-border:#e5e7eb;
+--hc-muted:#6b7280;
+--white:#ffffff;
+--separator:#d1d5db;
+}
+
+body{
+font-family:'Inter',sans-serif;
+background:var(--hc-bg);
+margin:0;
+color:#111827;
+display:flex;
+flex-direction:column;
+min-height:100vh;
+}
+
+header{
+background:white;
+height:70px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 2rem;
+border-bottom:1px solid var(--hc-border);
+position:fixed;
+top:0;
+width:100%;
+z-index:1000;
+}
+
+.logo-area{
+display:flex;
+align-items:center;
+gap:10px;
+text-decoration:none;
+}
+
+.logo-box{
+width:28px;
+height:28px;
+background:var(--hc-primary);
+border-radius:6px;
+}
+
+.logo-area h1{
+margin:0;
+font-size:1.1rem;
+color:var(--hc-primary);
+}
+
+.dashboard-wrapper{
+padding:6rem 2rem 3rem 2rem;
+max-width:1600px;
+margin:auto;
+width:100%;
+}
+
+.summary-container{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+margin-bottom:25px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 6px 15px rgba(0,0,0,0.05);
+border:1px solid var(--hc-border);
+}
+
+.card-title{
+font-size:0.8rem;
+color:var(--hc-muted);
+margin-bottom:10px;
+font-weight:600;
+}
+
+.card-value{
+font-size:1.8rem;
+font-weight:700;
+}
+
+.total{color:var(--hc-primary)}
+.pass{color:var(--hc-success)}
+.fail{color:var(--hc-fail)}
+
+.grid-container{
+background:white;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.05);
+border:1px solid var(--hc-border);
+display:grid;
+
+grid-template-columns:
+1.8fr 1.2fr 1fr 1.3fr 1fr 1.5fr 1.5fr 1.5fr;
+
+max-height:600px;
+overflow-y:auto;
+}
+
+.header-cell{
+background:#f9fafb;
+font-weight:700;
+font-size:0.75rem;
+text-transform:uppercase;
+color:var(--hc-muted);
+padding:16px 20px;
+border-bottom:2px solid var(--hc-border);
+position:sticky;
+top:0;
+z-index:10;
+}
+
+.spanning-label{
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+padding:20px;
+font-weight:700;
+color:var(--hc-primary);
+background:#fafdfd;
+border-right:1px solid var(--hc-border);
+border-bottom:2px solid var(--separator);
+}
+
+.cell{
+padding:14px 20px;
+border-bottom:1px solid #f3f4f6;
+display:flex;
+align-items:center;
+font-size:0.9rem;
+}
+
+.run-text{
+font-weight:600;
+}
+
+.status-pass{
+color:var(--hc-success);
+font-weight:700;
+}
+
+.status-fail{
+color:var(--hc-fail);
+font-weight:700;
+}
+
+.block-end{
+border-bottom:2px solid var(--separator);
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<a class="logo-area">
+<div class="logo-box"></div>
+<h1>TETRA</h1>
+</a>
+</header>
+
+<main class="dashboard-wrapper">
+
+<div class="summary-container">
+
+<div class="card">
+<div class="card-title">Total Checkouts</div>
+<div class="card-value total">{{total}}</div>
+</div>
+
+<div class="card">
+<div class="card-title">Pass</div>
+<div class="card-value pass">{{pass_count}}</div>
+</div>
+
+<div class="card">
+<div class="card-title">Fail</div>
+<div class="card-value fail">{{fail_count}}</div>
+</div>
+
+<div class="card">
+<div class="card-title">Adhoc Runs Today</div>
+<div class="card-value">{{adhoc_count}}</div>
+</div>
+
+</div>
+
+<div class="grid-container">
+
+<div class="header-cell">Checkout Name</div>
+<div class="header-cell">Date</div>
+<div class="header-cell">Run</div>
+<div class="header-cell">Time Reported</div>
+<div class="header-cell">Status</div>
+<div class="header-cell">Requested By</div>
+<div class="header-cell">Email Attachment</div>
+<div class="header-cell">Exception If Any</div>
+
+
+{% for checkout in table %}
+
+<div class="spanning-label" style="grid-row: span {{checkout.rows|length}};">
+{{checkout.name}}
+</div>
+
+{% for r in checkout.rows %}
+
+<div class="cell">{{r.date}}</div>
+
+<div class="cell run-text">{{r.run}}</div>
+
+<div class="cell">{{r.time}}</div>
+
+<div class="cell">
+{% if r.status == "PASS" %}
+<span class="status-pass">Pass</span>
+{% elif r.status == "FAIL" %}
+<span class="status-fail">Fail</span>
+{% endif %}
+</div>
+
+<div class="cell">{{r.requested_by}}</div>
+
+<div class="cell">
+{% if r.attachment %}
+<a href="/attachment/{{r.attachment}}">Click Here</a>
+{% endif %}
+</div>
+
+<div class="cell block-end">{{r.exception}}</div>
+
+{% endfor %}
+
+{% endfor %}
+
+</div>
+
+</main>
+
+</body>
+</html>
