@@ -1,1 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCS Healthcare — Clinical Operations Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal:      #0A7C6E;
+    --teal-lt:   #12A090;
+    --teal-dk:   #065248;
+    --sky:       #EAF7F5;
+    --accent:    #F4A836;
+    --danger:    #E05252;
+    --success:   #2ECC8B;
+    --ink:       #0F1F1D;
+    --muted:     #6B8A87;
+    --line:      #D4ECEA;
+    --white:     #FFFFFF;
+    --card-bg:   #F7FDFC;
+    --sidebar-w: 240px;
+  }
 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--sky);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    overflow-x: hidden;
+  }
+
+  /* ── SIDEBAR ─────────────────────────────────────────── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--teal-dk);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    z-index: 100;
+    transition: width .3s ease;
+  }
+
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; color: var(--ink);
+    flex-shrink: 0;
+  }
+  .logo-text { color: #fff; font-size: 13px; line-height: 1.3; }
+  .logo-text strong { display: block; font-size: 15px; letter-spacing: .3px; }
+
+  nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+
+  .nav-section { margin-bottom: 4px; }
+  .nav-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 1.2px;
+    color: rgba(255,255,255,.35);
+    text-transform: uppercase;
+    padding: 8px 24px 4px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 24px;
+    color: rgba(255,255,255,.65);
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all .2s;
+  }
+  .nav-item:hover, .nav-item.active {
+    background: rgba(255,255,255,.07);
+    color: #fff;
+    border-left-color: var(--accent);
+  }
+  .nav-item svg { flex-shrink: 0; opacity: .8; }
+  .nav-badge {
+    margin-left: auto;
+    background: var(--danger);
+    color: #fff;
+    font-size: 10px; font-weight: 600;
+    padding: 2px 6px; border-radius: 10px;
+  }
+
+  .sidebar-footer {
+    padding: 16px 24px;
+    border-top: 1px solid rgba(255,255,255,.1);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--teal-lt);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 600; font-size: 12px; flex-shrink: 0;
+  }
+  .user-info { flex: 1; }
+  .user-name { color: #fff; font-size: 13px; font-weight: 500; }
+  .user-role { color: rgba(255,255,255,.4); font-size: 11px; }
+
+  /* ── MAIN ─────────────────────────────────────────────── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ── TOPBAR ──────────────────────────────────────────── */
+  .topbar {
+    background: var(--white);
+    padding: 0 32px;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 50;
+  }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--ink); }
+  .page-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+
+  .search-box {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--sky);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px; color: var(--muted);
+    cursor: text; transition: border-color .2s;
+    width: 200px;
+  }
+  .search-box:focus-within { border-color: var(--teal); }
+  .search-box input {
+    border: none; background: none; outline: none;
+    font-family: inherit; font-size: 13px; color: var(--ink); width: 100%;
+  }
+
+  .icon-btn {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--sky); border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; position: relative; color: var(--muted);
+    transition: background .2s;
+  }
+  .icon-btn:hover { background: var(--line); }
+  .notif-dot {
+    position: absolute; top: 6px; right: 6px;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--danger); border: 1.5px solid #fff;
+  }
+
+  /* ── CONTENT ──────────────────────────────────────────── */
+  .content { padding: 28px 32px; flex: 1; }
+
+  /* ── KPI STRIP ───────────────────────────────────────── */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .kpi-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 20px 22px;
+    border: 1px solid var(--line);
+    display: flex; flex-direction: column; gap: 6px;
+    opacity: 0;
+    animation: fadeUp .5s ease forwards;
+    transition: box-shadow .2s;
+  }
+  .kpi-card:hover { box-shadow: 0 6px 24px rgba(10,124,110,.1); }
+  .kpi-card:nth-child(1) { animation-delay: .05s; }
+  .kpi-card:nth-child(2) { animation-delay: .1s; }
+  .kpi-card:nth-child(3) { animation-delay: .15s; }
+  .kpi-card:nth-child(4) { animation-delay: .2s; }
+
+  .kpi-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); }
+  .kpi-value { font-size: 32px; font-weight: 600; color: var(--ink); line-height: 1; }
+  .kpi-delta {
+    font-size: 12px; display: flex; align-items: center; gap: 4px;
+  }
+  .kpi-delta.up { color: var(--success); }
+  .kpi-delta.dn { color: var(--danger); }
+  .kpi-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 4px;
+  }
+
+  /* ── GRID LAYOUT ─────────────────────────────────────── */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 320px;
+    grid-template-rows: auto auto;
+    gap: 20px;
+  }
+
+  /* ── SECTION CARD ────────────────────────────────────── */
+  .card {
+    background: var(--white);
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeUp .5s ease forwards;
+    transition: box-shadow .2s;
+  }
+  .card:hover { box-shadow: 0 6px 24px rgba(10,124,110,.08); }
+  .card:nth-child(1) { animation-delay: .25s; }
+  .card:nth-child(2) { animation-delay: .3s; }
+  .card:nth-child(3) { animation-delay: .35s; }
+  .card:nth-child(4) { animation-delay: .4s; }
+  .card:nth-child(5) { animation-delay: .45s; }
+
+  .card-header {
+    padding: 18px 22px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+  }
+  .card-title { font-weight: 600; font-size: 15px; }
+  .card-subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .card-action {
+    font-size: 12px; color: var(--teal); cursor: pointer;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .card-body { padding: 18px 22px; }
+
+  /* ── BUNDLE MODULE ────────────────────────────────────── */
+  .bundle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .module-tile {
+    border-radius: 10px;
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform .15s;
+  }
+  .module-tile:hover { transform: translateY(-2px); }
+  .module-tile::after {
+    content: '';
+    position: absolute; top: -20px; right: -20px;
+    width: 60px; height: 60px; border-radius: 50%;
+    background: rgba(255,255,255,.15);
+  }
+  .module-tile.teal   { background: linear-gradient(135deg, var(--teal), var(--teal-lt)); color: #fff; }
+  .module-tile.amber  { background: linear-gradient(135deg, #D97706, #F4A836); color: #fff; }
+  .module-tile.plum   { background: linear-gradient(135deg, #6C3483, #9B59B6); color: #fff; }
+  .module-tile.slate  { background: linear-gradient(135deg, #2C3E50, #4A6274); color: #fff; }
+
+  .tile-label { font-size: 13px; font-weight: 600; }
+  .tile-count { font-size: 26px; font-weight: 700; }
+  .tile-sub   { font-size: 11px; opacity: .75; }
+
+  /* ── DDy / EBB / DAys LINKS ──────────────────────────── */
+  .quick-links { display: flex; flex-direction: column; gap: 0; }
+  .qlink {
+    display: flex; align-items: center;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--line);
+    gap: 12px;
+    cursor: pointer;
+    transition: background .15s;
+    border-radius: 6px;
+    padding-left: 8px; padding-right: 8px;
+  }
+  .qlink:last-child { border-bottom: none; }
+  .qlink:hover { background: var(--sky); }
+
+  .qlink-icon {
+    width: 36px; height: 36px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .qlink-title { font-size: 14px; font-weight: 500; }
+  .qlink-desc  { font-size: 11px; color: var(--muted); }
+  .qlink-arrow { margin-left: auto; color: var(--muted); }
+  .qlink-badge {
+    margin-left: 6px; font-size: 10px; font-weight: 600;
+    background: var(--sky); border: 1px solid var(--line);
+    padding: 2px 7px; border-radius: 10px; color: var(--teal);
+  }
+
+  /* ── CONSISTENCY TABLE ───────────────────────────────── */
+  .consist-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .consist-table th {
+    text-align: left; padding: 8px 10px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .7px; color: var(--muted);
+    border-bottom: 2px solid var(--line);
+  }
+  .consist-table td { padding: 11px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .consist-table tr:last-child td { border-bottom: none; }
+  .consist-table tr:hover td { background: var(--sky); }
+
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .pill-green { background: #D1F5E5; color: #1A7F50; }
+  .pill-amber { background: #FEF3C7; color: #92400E; }
+  .pill-red   { background: #FEE2E2; color: #9B1C1C; }
+  .pill-blue  { background: #DBEAFE; color: #1E40AF; }
+
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  /* ── PROCESS FLOW ────────────────────────────────────── */
+  .process-flow { display: flex; align-items: flex-start; gap: 0; position: relative; }
+  .process-step {
+    flex: 1; text-align: center; padding: 0 8px;
+    position: relative;
+  }
+  .step-circle {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: var(--sky); border: 2px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 10px;
+    font-size: 16px;
+    transition: all .2s;
+    cursor: pointer;
+  }
+  .step-circle.done  { background: var(--teal); border-color: var(--teal); color: #fff; }
+  .step-circle.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 0 4px rgba(244,168,54,.2); }
+
+  .step-line {
+    position: absolute; top: 20px; left: 50%;
+    width: 100%; height: 2px; background: var(--line); z-index: 0;
+  }
+  .step-line.done { background: var(--teal); }
+
+  .step-label { font-size: 11px; color: var(--muted); font-weight: 500; }
+  .step-label strong { display: block; font-size: 12px; color: var(--ink); }
+
+  /* ── ACTIVITY FEED ───────────────────────────────────── */
+  .activity-feed { display: flex; flex-direction: column; gap: 0; }
+  .activity-item {
+    display: flex; gap: 12px; padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-dot-wrap { display: flex; flex-direction: column; align-items: center; padding-top: 3px; }
+  .activity-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    border: 2px solid; flex-shrink: 0;
+  }
+  .activity-line { flex: 1; width: 1px; background: var(--line); margin-top: 4px; }
+  .activity-body { flex: 1; }
+  .activity-text { font-size: 13px; line-height: 1.4; }
+  .activity-meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+  /* ── PROGRESS BAR ────────────────────────────────────── */
+  .progress-group { display: flex; flex-direction: column; gap: 14px; }
+  .progress-item {}
+  .progress-info { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
+  .progress-label { font-weight: 500; }
+  .progress-val { color: var(--muted); font-size: 12px; }
+  .progress-bar-bg {
+    height: 7px; background: var(--sky); border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .progress-bar-fill {
+    height: 100%; border-radius: 10px;
+    transition: width 1s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ── SPAN HELPERS ────────────────────────────────────── */
+  .span-2 { grid-column: span 2; }
+  .span-full { grid-column: 1 / -1; }
+
+  /* ── MINI CHART ──────────────────────────────────────── */
+  canvas.minichart { width: 100%; height: 100px; display: block; }
+
+  /* ── BANNER ──────────────────────────────────────────── */
+  .banner {
+    background: linear-gradient(135deg, var(--teal-dk), var(--teal));
+    border-radius: 14px;
+    padding: 20px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp .5s .02s ease forwards;
+    color: #fff;
+  }
+  .banner-text h2 { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 4px; }
+  .banner-text p  { font-size: 13px; opacity: .75; }
+  .banner-stats { display: flex; gap: 28px; }
+  .banner-stat { text-align: center; }
+  .banner-stat .bval { font-size: 28px; font-weight: 700; }
+  .banner-stat .blbl { font-size: 11px; opacity: .65; text-transform: uppercase; letter-spacing: .8px; }
+
+  /* ── ANIMATIONS ──────────────────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SCROLLBAR ───────────────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+
+  /* ── RESPONSIVE ──────────────────────────────────────── */
+  @media(max-width:1100px){
+    .dashboard-grid { grid-template-columns: 1fr 1fr; }
+    .kpi-strip { grid-template-columns: repeat(2,1fr); }
+  }
+  @media(max-width:720px){
+    .sidebar { width: 64px; }
+    .sidebar-logo .logo-text, .nav-label, .nav-item span, .sidebar-footer .user-info { display: none; }
+    .main { margin-left: 64px; }
+    .dashboard-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">TCS</div>
+    <div class="logo-text">
+      <strong>HealthCare</strong>
+      <span style="font-size:10px;opacity:.6">Clinical Ops Platform</span>
+    </div>
+  </div>
+
+  <nav>
+    <div class="nav-section">
+      <div class="nav-label">Overview</div>
+      <a class="nav-item active">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Dashboard</span>
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Modules</div>
+      <a class="nav-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 3v4M8 3v4M16 17v4M8 17v4"/></svg>
+        <span>Bundle</span>
+        <span class="nav-badge">4</span>
+      </a>
+      <a class="nav-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        <span>BAM</span>
+      </a>
+      <a class="nav-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span>ECM</span>
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Clinical</div>
+      <a class="nav-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        <span>DDy Portal</span>
+      </a>
+      <a class="nav-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span>EBB Monitor</span>
+      </a>
+      <a class="nav-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>DAys Tracker</span>
+        <span class="nav-badge">2</span>
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">System</div>
+      <a class="nav-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M20 12h-2M6 12H4M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M12 20v-2M12 6V4"/></svg>
+        <span>Use Consistency</span>
+      </a>
+      <a class="nav-item">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+        <span>Process Flow</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="avatar">DR</div>
+    <div class="user-info">
+      <div class="user-name">Dr. Rajan</div>
+      <div class="user-role">Clinical Admin</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN
+════════════════════════════════════════════════════════════ -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div>
+      <div class="page-title">Clinical Dashboard</div>
+      <div class="page-sub">Friday, 13 March 2026 · General Hospital Network</div>
+    </div>
+    <div class="topbar-right">
+      <div class="search-box">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search patients, records…">
+      </div>
+      <div class="icon-btn">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <div class="notif-dot"></div>
+      </div>
+      <div class="icon-btn">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- BANNER -->
+    <div class="banner">
+      <div class="banner-text">
+        <h2>Good morning, Dr. Rajan 👋</h2>
+        <p>Here's your clinical operations summary for today. 3 items require immediate attention.</p>
+      </div>
+      <div class="banner-stats">
+        <div class="banner-stat">
+          <div class="bval">98.4<span style="font-size:14px">%</span></div>
+          <div class="blbl">System Uptime</div>
+        </div>
+        <div class="banner-stat">
+          <div class="bval">247</div>
+          <div class="blbl">Active Patients</div>
+        </div>
+        <div class="banner-stat">
+          <div class="bval">12</div>
+          <div class="blbl">Pending Tasks</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI STRIP -->
+    <div class="kpi-strip">
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#D1F5E5;"><svg width="18" height="18" fill="none" stroke="#1A7F50" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+        <div class="kpi-label">Admissions Today</div>
+        <div class="kpi-value">34</div>
+        <div class="kpi-delta up">▲ 12% vs yesterday</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#FEF3C7;"><svg width="18" height="18" fill="none" stroke="#92400E" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="kpi-label">Critical Alerts</div>
+        <div class="kpi-value">7</div>
+        <div class="kpi-delta dn">▼ 3 from last hour</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#DBEAFE;"><svg width="18" height="18" fill="none" stroke="#1E40AF" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <div class="kpi-label">Records Processed</div>
+        <div class="kpi-value">1,482</div>
+        <div class="kpi-delta up">▲ 8% this week</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#EDE9FE;"><svg width="18" height="18" fill="none" stroke="#6C3483" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="kpi-label">Avg. DAys Score</div>
+        <div class="kpi-value">4.2</div>
+        <div class="kpi-delta up">▲ 0.3 improvement</div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD GRID -->
+    <div class="dashboard-grid">
+
+      <!-- BUNDLE MODULES -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Bundle Modules</div>
+            <div class="card-subtitle">Active care pathways & systems</div>
+          </div>
+          <div class="card-action">Manage ›</div>
+        </div>
+        <div class="card-body">
+          <div class="bundle-grid">
+            <div class="module-tile teal" onclick="this.style.transform='scale(.97)'">
+              <div class="tile-label">BAM</div>
+              <div class="tile-count">18</div>
+              <div class="tile-sub">Bed Allocation Mgmt</div>
+            </div>
+            <div class="module-tile amber" onclick="this.style.transform='scale(.97)'">
+              <div class="tile-label">ECM</div>
+              <div class="tile-count">64</div>
+              <div class="tile-sub">Enterprise Content</div>
+            </div>
+            <div class="module-tile plum" onclick="this.style.transform='scale(.97)'">
+              <div class="tile-label">DDy</div>
+              <div class="tile-count">23</div>
+              <div class="tile-sub">Daily Diagnostics</div>
+            </div>
+            <div class="module-tile slate" onclick="this.style.transform='scale(.97)'">
+              <div class="tile-label">EBB</div>
+              <div class="tile-count">11</div>
+              <div class="tile-sub">Event-Based Billing</div>
+            </div>
+          </div>
+
+          <!-- Mini chart -->
+          <div style="margin-top:18px;">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Weekly activity — all modules</div>
+            <canvas id="miniChart" class="minichart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- DDy / EBB / DAys QUICK LINKS -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Quick Links</div>
+            <div class="card-subtitle">DDy · EBB · DAys portals</div>
+          </div>
+          <div class="card-action">All links ›</div>
+        </div>
+        <div class="card-body" style="padding-top:8px;padding-bottom:8px;">
+          <div class="quick-links">
+            <div class="qlink">
+              <div class="qlink-icon" style="background:#D1F5E5;">
+                <svg width="16" height="16" fill="none" stroke="#1A7F50" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              </div>
+              <div>
+                <div class="qlink-title">DDy Patient Link <span class="qlink-badge">Active</span></div>
+                <div class="qlink-desc">Daily diagnostic patient portal</div>
+              </div>
+              <div class="qlink-arrow">›</div>
+            </div>
+            <div class="qlink">
+              <div class="qlink-icon" style="background:#FEF3C7;">
+                <svg width="16" height="16" fill="none" stroke="#92400E" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+              </div>
+              <div>
+                <div class="qlink-title">EBB — Unit Link <span class="qlink-badge">Review</span></div>
+                <div class="qlink-desc">Event-based billing reconciliation</div>
+              </div>
+              <div class="qlink-arrow">›</div>
+            </div>
+            <div class="qlink">
+              <div class="qlink-icon" style="background:#DBEAFE;">
+                <svg width="16" height="16" fill="none" stroke="#1E40AF" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div>
+                <div class="qlink-title">DAys — Unit Link <span class="qlink-badge">2 due</span></div>
+                <div class="qlink-desc">Length-of-stay scoring tracker</div>
+              </div>
+              <div class="qlink-arrow">›</div>
+            </div>
+            <div class="qlink">
+              <div class="qlink-icon" style="background:#EDE9FE;">
+                <svg width="16" height="16" fill="none" stroke="#6C3483" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div>
+                <div class="qlink-title">ECM Documents</div>
+                <div class="qlink-desc">Enterprise content repository</div>
+              </div>
+              <div class="qlink-arrow">›</div>
+            </div>
+            <div class="qlink">
+              <div class="qlink-icon" style="background:#FFEDD5;">
+                <svg width="16" height="16" fill="none" stroke="#C2410C" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              </div>
+              <div>
+                <div class="qlink-title">BAM Ward View</div>
+                <div class="qlink-desc">Bed allocation live map</div>
+              </div>
+              <div class="qlink-arrow">›</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVITY + ALERTS (right column) -->
+      <div class="card" style="grid-row: span 2;">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Activity Feed</div>
+            <div class="card-subtitle">Latest system events</div>
+          </div>
+          <div class="card-action">View all</div>
+        </div>
+        <div class="card-body" style="padding-top:8px;padding-bottom:8px;max-height:520px;overflow-y:auto;">
+          <div class="activity-feed" id="activityFeed"></div>
+        </div>
+      </div>
+
+      <!-- USE CONSISTENCY / COMPLIANCE TABLE -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Use Consistency</div>
+            <div class="card-subtitle">Compliance & protocol adherence</div>
+          </div>
+          <div class="card-action">Full report ›</div>
+        </div>
+        <div class="card-body" style="padding:0 0 8px;">
+          <table class="consist-table">
+            <thead>
+              <tr>
+                <th>Department</th>
+                <th>Protocol</th>
+                <th>Adherence</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="consistTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PROCESS FLOW -->
+      <div class="card span-2" style="margin-top:0;">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Process Flow</div>
+            <div class="card-subtitle">Current patient admission pipeline</div>
+          </div>
+          <div class="card-action">Details ›</div>
+        </div>
+        <div class="card-body">
+          <div class="process-flow" id="processFlow"></div>
+
+          <div style="margin-top:24px;">
+            <div style="font-size:13px;font-weight:600;margin-bottom:14px;color:var(--muted);">Module Completion</div>
+            <div class="progress-group" id="progressGroup"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /dashboard-grid -->
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script>
+/* ────────────────────────────────────────────────────────
+   DATA
+──────────────────────────────────────────────────────── */
+const activities = [
+  { color: '#1A7F50', border: '#D1F5E5', text: 'Bundle <strong>BAM-024</strong> assigned — Ward 3B', time: '2 min ago', tag: 'Bundle' },
+  { color: '#92400E', border: '#FEF3C7', text: 'EBB claim <strong>#8821</strong> flagged for review', time: '14 min ago', tag: 'EBB' },
+  { color: '#1E40AF', border: '#DBEAFE', text: 'DAys score updated for patient <strong>P-0044</strong>', time: '31 min ago', tag: 'DAys' },
+  { color: '#6C3483', border: '#EDE9FE', text: 'ECM document <strong>MR-2026-0312</strong> uploaded', time: '52 min ago', tag: 'ECM' },
+  { color: '#1A7F50', border: '#D1F5E5', text: 'DDy portal: 3 results cleared for discharge', time: '1 hr ago', tag: 'DDy' },
+  { color: '#9B1C1C', border: '#FEE2E2', text: 'CRITICAL: ICU bed occupancy at 94%', time: '1.5 hr ago', tag: 'Alert' },
+  { color: '#92400E', border: '#FEF3C7', text: 'BAM allocation recalculated — 6 moves', time: '2 hr ago', tag: 'BAM' },
+  { color: '#1E40AF', border: '#DBEAFE', text: 'ECM audit trail generated for Q1 2026', time: '3 hr ago', tag: 'ECM' },
+];
+
+const consistData = [
+  { dept:'ICU',        protocol:'Sepsis Bundle',    adherence:'97%', status:'pill-green', label:'Compliant' },
+  { dept:'Cardiology', protocol:'ACS Pathway',      adherence:'89%', status:'pill-amber', label:'Review' },
+  { dept:'Oncology',   protocol:'Chemo Safety',     adherence:'100%',status:'pill-green', label:'Compliant' },
+  { dept:'Paediatrics',protocol:'VAP Bundle',       adherence:'72%', status:'pill-red',   label:'At Risk' },
+  { dept:'Emergency',  protocol:'Triage Protocol',  adherence:'95%', status:'pill-green', label:'Compliant' },
+  { dept:'Surgery',    protocol:'WHO Checklist',    adherence:'83%', status:'pill-amber', label:'Review' },
+];
+
+const processSteps = [
+  { label:'Triage', sub:'Registration', state:'done' },
+  { label:'Assessment', sub:'DDy Check', state:'done' },
+  { label:'Admission', sub:'BAM Assign', state:'done' },
+  { label:'Treatment', sub:'Active', state:'active' },
+  { label:'Review', sub:'EBB Score', state:'' },
+  { label:'Discharge', sub:'ECM Final', state:'' },
+];
+
+const progressData = [
+  { label:'Bundle Completion', val:78,  color:'var(--teal)' },
+  { label:'ECM Filing',        val:91,  color:'var(--success)' },
+  { label:'EBB Reconciliation',val:64,  color:'var(--accent)' },
+  { label:'DAys Scoring',      val:55,  color:'#9B59B6' },
+];
+
+/* ────────────────────────────────────────────────────────
+   RENDER ACTIVITY FEED
+──────────────────────────────────────────────────────── */
+const feed = document.getElementById('activityFeed');
+activities.forEach((a, i) => {
+  const isLast = i === activities.length - 1;
+  feed.innerHTML += `
+    <div class="activity-item">
+      <div class="activity-dot-wrap">
+        <div class="activity-dot" style="border-color:${a.color};background:${a.border}"></div>
+        ${!isLast ? '<div class="activity-line"></div>' : ''}
+      </div>
+      <div class="activity-body">
+        <div class="activity-text">${a.text}</div>
+        <div class="activity-meta">${a.tag} · ${a.time}</div>
+      </div>
+    </div>`;
+});
+
+/* ────────────────────────────────────────────────────────
+   RENDER CONSISTENCY TABLE
+──────────────────────────────────────────────────────── */
+const tbody = document.getElementById('consistTable');
+consistData.forEach(r => {
+  tbody.innerHTML += `
+    <tr>
+      <td style="font-weight:500">${r.dept}</td>
+      <td style="color:var(--muted)">${r.protocol}</td>
+      <td style="font-weight:600">${r.adherence}</td>
+      <td><span class="status-pill ${r.status}"><span class="dot"></span>${r.label}</span></td>
+    </tr>`;
+});
+
+/* ────────────────────────────────────────────────────────
+   RENDER PROCESS FLOW
+──────────────────────────────────────────────────────── */
+const pf = document.getElementById('processFlow');
+processSteps.forEach((s, i) => {
+  const cls = s.state === 'done' ? 'done' : s.state === 'active' ? 'active' : '';
+  const lineCls = s.state === 'done' ? 'done' : '';
+  pf.innerHTML += `
+    <div class="process-step">
+      ${i < processSteps.length - 1 ? `<div class="step-line ${lineCls}"></div>` : ''}
+      <div class="step-circle ${cls}" style="position:relative;z-index:1;">
+        ${s.state === 'done' ? '✓' : s.state === 'active' ? '●' : String(i+1)}
+      </div>
+      <div class="step-label"><strong>${s.label}</strong>${s.sub}</div>
+    </div>`;
+});
+
+/* ────────────────────────────────────────────────────────
+   RENDER PROGRESS BARS
+──────────────────────────────────────────────────────── */
+const pg = document.getElementById('progressGroup');
+progressData.forEach(p => {
+  pg.innerHTML += `
+    <div class="progress-item">
+      <div class="progress-info">
+        <span class="progress-label">${p.label}</span>
+        <span class="progress-val">${p.val}%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" style="width:0%;background:${p.color}" data-val="${p.val}"></div>
+      </div>
+    </div>`;
+});
+
+/* Animate bars on load */
+setTimeout(() => {
+  document.querySelectorAll('.progress-bar-fill').forEach(el => {
+    el.style.width = el.dataset.val + '%';
+  });
+}, 400);
+
+/* ────────────────────────────────────────────────────────
+   MINI CHART
+──────────────────────────────────────────────────────── */
+const ctx = document.getElementById('miniChart').getContext('2d');
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    datasets: [
+      {
+        label: 'BAM', data: [14,18,15,22,19,16,18],
+        borderColor: '#0A7C6E', backgroundColor: 'rgba(10,124,110,.08)',
+        tension: .4, fill: true, pointRadius: 3
+      },
+      {
+        label: 'EBB', data: [8,10,13,9,11,14,11],
+        borderColor: '#F4A836', backgroundColor: 'rgba(244,168,54,.06)',
+        tension: .4, fill: true, pointRadius: 3
+      },
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#6B8A87' } },
+      y: { display: false }
+    }
+  }
+});
+
+/* ────────────────────────────────────────────────────────
+   LIVE CLOCK in topbar
+──────────────────────────────────────────────────────── */
+function updateClock() {
+  const now = new Date();
+  const sub = document.querySelector('.page-sub');
+  if(sub) {
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    sub.textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} · ${now.toLocaleTimeString()} · General Hospital Network`;
+  }
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+/* ────────────────────────────────────────────────────────
+   NAV INTERACTION
+──────────────────────────────────────────────────────── */
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
