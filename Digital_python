@@ -1,83 +1,102 @@
-
-@app.route('/digital', methods=['GET'])
+@app.route('/trigger_adhoc_action', methods=['POST'])
 
 @login_required
 
-def digital_dashboard():
+def trigger_adhoc_action():
 
-    rows = CheckoutStatus.query.all()
+    data = request.get_json()
 
-    lookup = {}
+    checkout_name = data.get('name')
 
-    for r in rows:
+    run_type = "Adhoc"
 
-        lookup[(r.checkout_name.strip(), r.run_type.strip())] = r
+    user_email = session.get('user')
 
-    table = []
+    user_name = session.get('employee_id')
 
-    for checkout, runs in CHECKOUT_STRUCTURE.items():
+    user_first_name = session.get('first_name')
 
-        run_rows = []
+    user_last_name = session.get('last_name')
 
-        for run in runs:
+    full_name = str(user_first_name + " " + user_last_name)
 
-            r = lookup.get((checkout, run))
+    if not user_email:
 
-            if r:
+        return jsonify({"success": False, "error": "User session not found"}), 401
 
-                run_rows.append({
+    # 1. Look up the specific subject
 
-                    "date" : r.checkout_date,
+    subject = ADHOC_SUBJECT_MAP.get(checkout_name, None)
 
-                    "run" : run,
+    if subject is not None:
 
-                    "time" : r.reported_time,
+        try:
 
-                    "status" : r.checkout_status,
+            # 2. Call your email function
 
-                    "requested_by" : r.requested_by,
+            # Sender is the logged-in user email
 
-                    "attachment" : r.email_attachment,
+            send_adhoc_email(
 
-                    #"exception" : r.exception
+                subject=subject,
 
-                })
+                sender=user_email,
 
-            else:
+                sender_name=full_name
 
-                run_rows.append({
+            )
 
-                    "date" : "",
+            current_date = datetime.now().strftime('%m/%d/%Y')
 
-                    "run" : run,
+            current_time = datetime.now().strftime('%H:%M:%S')
 
-                    "time" : "",
+            status = "IN-PROGRESS"
 
-                    "status" : "",
+            conn = sqlite3.connect(DATABASE_PATH)
 
-                    "requested_by" : "",
+            cur = conn.cursor()
 
-                    "attachment" : "",
+            # Logic: "Scheduled" if run matches, else NULL
 
-                    #"exception" : ""
+            requested_by = user_name if user_name else None
 
-                })
+            cur.execute("""
 
-        table.append({
+                INSERT INTO digital_checkout_details
 
-            "name" : checkout,
+                (checkout_name, checkout_date, run_type, reported_time, checkout_status, requested_by)
 
-            "rows" : run_rows
+                VALUES (?, ?, ?, ?, ?, ?)
 
-        })
+                ON CONFLICT(checkout_name, run_type)
 
-    table.sort(key=lambda x: x['name'].lower()) 
+                DO UPDATE SET
 
-    pass_count = CheckoutStatus.query.filter_by(checkout_status="PASS").count()
+                    reported_time=excluded.reported_time,
 
-    fail_count = CheckoutStatus.query.filter_by(checkout_status="FAIL").count()
+                    checkout_date=excluded.checkout_date,
 
-    #adhoc_count = CheckoutStatus.query.filter_by(checkout_status="FAIL").count()
+                    checkout_status=excluded.checkout_status,
 
-    return render_template("digital_dashboard.html", table=table, total=len(CHECKOUT_STRUCTURE), pass_count=pass_count, fail_count=fail_count)
+                    requested_by=excluded.requested_by
+
+                """,
+
+                (checkout_name, current_date, run_type, current_time, status, requested_by))
+
+            conn.commit()
+
+            conn.close()
+
+            # 3. Return user name for the UI update
+
+            return jsonify({"success": True, "user_name": user_name})
+
+        except Exception as e:
+
+            return jsonify({"success": False, "error": str(e)}), 500
+
+    else:
+
+        return jsonify({"success": False, "error": "Subject details not found"}), 500
  
