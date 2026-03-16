@@ -1,0 +1,83 @@
+
+@app.route('/digital', methods=['GET'])
+
+@login_required
+
+def digital_dashboard():
+
+    rows = CheckoutStatus.query.all()
+
+    lookup = {}
+
+    for r in rows:
+
+        lookup[(r.checkout_name.strip(), r.run_type.strip())] = r
+
+    table = []
+
+    for checkout, runs in CHECKOUT_STRUCTURE.items():
+
+        run_rows = []
+
+        for run in runs:
+
+            r = lookup.get((checkout, run))
+
+            if r:
+
+                run_rows.append({
+
+                    "date" : r.checkout_date,
+
+                    "run" : run,
+
+                    "time" : r.reported_time,
+
+                    "status" : r.checkout_status,
+
+                    "requested_by" : r.requested_by,
+
+                    "attachment" : r.email_attachment,
+
+                    #"exception" : r.exception
+
+                })
+
+            else:
+
+                run_rows.append({
+
+                    "date" : "",
+
+                    "run" : run,
+
+                    "time" : "",
+
+                    "status" : "",
+
+                    "requested_by" : "",
+
+                    "attachment" : "",
+
+                    #"exception" : ""
+
+                })
+
+        table.append({
+
+            "name" : checkout,
+
+            "rows" : run_rows
+
+        })
+
+    table.sort(key=lambda x: x['name'].lower()) 
+
+    pass_count = CheckoutStatus.query.filter_by(checkout_status="PASS").count()
+
+    fail_count = CheckoutStatus.query.filter_by(checkout_status="FAIL").count()
+
+    #adhoc_count = CheckoutStatus.query.filter_by(checkout_status="FAIL").count()
+
+    return render_template("digital_dashboard.html", table=table, total=len(CHECKOUT_STRUCTURE), pass_count=pass_count, fail_count=fail_count)
+ 
