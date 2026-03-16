@@ -11,406 +11,308 @@
     --teal-lt:  #13B0A0;
     --teal-dk:  #054F46;
     --sky:      #F0FAF9;
-    --accent:   #E8534A;
     --gold:     #F5A623;
     --ink:      #0D1F1D;
     --sub:      #5E7C79;
     --border:   #D6EEEB;
     --white:    #FFFFFF;
-    --bg:       #E8F6F4;
+    --bg:       #E4F4F2;
     --pass:     #16A34A;
     --pass-bg:  #DCFCE7;
     --fail:     #DC2626;
     --fail-bg:  #FEE2E2;
+    --hdr-h:    68px;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
+  html, body {
+    height: 100%;
+    overflow: hidden;
     font-family: 'Outfit', sans-serif;
     background: var(--bg);
     color: var(--ink);
-    min-height: 100vh;
   }
 
-  /* ── TOP HEADER ─────────────────────────── */
+  /* ══ HEADER ══════════════════════════════════ */
   .top-header {
+    height: var(--hdr-h);
     background: linear-gradient(135deg, var(--teal-dk) 0%, var(--teal) 100%);
-    padding: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; flex-shrink: 0;
+    box-shadow: 0 2px 12px rgba(5,79,70,.3);
   }
-  .screen-label {
-    background: rgba(255,255,255,.1);
-    text-align: center;
-    padding: 6px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,.7);
-    border-bottom: 1px solid rgba(255,255,255,.1);
-  }
-  .brand-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 32px;
-  }
-  .brand-left { display: flex; align-items: center; gap: 14px; }
-  .brand-icon {
-    width: 44px; height: 44px;
-    background: var(--gold);
-    border-radius: 12px;
+  .brand-left  { display: flex; align-items: center; gap: 12px; }
+  .brand-icon  {
+    width: 38px; height: 38px; background: var(--gold); border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    font-weight: 800; font-size: 16px; color: var(--ink);
-    flex-shrink: 0;
+    font-weight: 800; font-size: 14px; color: var(--ink); flex-shrink: 0;
   }
-  .brand-name {
-    font-family: 'Libre Baskerville', serif;
-    font-size: 26px;
-    color: #fff;
-    font-weight: 700;
-    letter-spacing: -.3px;
-  }
-  .brand-tagline {
-    font-size: 12px;
-    color: rgba(255,255,255,.6);
-    margin-top: 2px;
-    font-style: italic;
-  }
-  .brand-right { display: flex; align-items: center; gap: 16px; }
+  .brand-name    { font-family: 'Libre Baskerville', serif; font-size: 22px; color: #fff; font-weight: 700; }
+  .brand-tagline { font-size: 11px; color: rgba(255,255,255,.55); font-style: italic; margin-top: 1px; }
+  .brand-right   { display: flex; align-items: center; gap: 12px; }
+
   .refresh-btn {
-    display: flex; align-items: center; gap: 7px;
-    background: rgba(255,255,255,.12);
-    border: 1px solid rgba(255,255,255,.2);
-    color: #fff;
-    padding: 8px 18px;
-    border-radius: 8px;
-    font-family: 'Outfit', sans-serif;
-    font-size: 13px; font-weight: 500;
-    cursor: pointer;
-    transition: background .2s;
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+    color: #fff; padding: 7px 16px; border-radius: 7px;
+    font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 500;
+    cursor: pointer; transition: background .2s;
   }
-  .refresh-btn:hover { background: rgba(255,255,255,.2); }
-  .refresh-btn svg { transition: transform .4s; }
+  .refresh-btn:hover { background: rgba(255,255,255,.22); }
   .refresh-btn.spinning svg { animation: spin .6s linear; }
+
   .status-summary {
-    display: flex; align-items: center; gap: 8px;
-    background: rgba(255,255,255,.1);
-    border: 1px solid rgba(255,255,255,.15);
-    border-radius: 8px;
-    padding: 8px 16px;
+    display: flex; align-items: center; gap: 7px;
+    background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
+    border-radius: 7px; padding: 7px 14px;
   }
-  .sum-dot { width: 8px; height: 8px; border-radius: 50%; }
-  .sum-text { font-size: 12px; font-weight: 600; color: #fff; }
+  .sum-dot  { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .sum-text { font-size: 12px; font-weight: 600; color: #fff; white-space: nowrap; }
 
-  /* ── PAGE ───────────────────────────────── */
-  .page { max-width: 1400px; margin: 0 auto; padding: 28px 24px 56px; }
-
-  /* ── SECTION HEADER ─────────────────────── */
-  .section-head {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 16px;
-    border-radius: 8px;
-    margin-bottom: 12px;
-    font-size: 13px; font-weight: 700;
-    letter-spacing: .4px;
-    text-transform: uppercase;
-  }
-  .sh-overall  { background: #0A7C6E; color: #fff; }
-  .sh-app      { background: #1E6B9E; color: #fff; }
-  .sh-dash     { background: #7B3FA0; color: #fff; }
-  .sh-monitor  { background: #B45309; color: #fff; }
-  .sh-digital  { background: #B91C1C; color: #fff; }
-
-  /* ── MAIN GRID ──────────────────────────── */
-  .main-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
+  /* ══ BODY AREA ════════════════════════════════ */
+  .body-area {
+    height: calc(100vh - var(--hdr-h));
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    overflow: hidden;
   }
 
-  /* ── PANEL CARD ─────────────────────────── */
+  /* ══ COLUMNS ══════════════════════════════════ */
+  .col-left, .col-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  /* ══ PANEL ════════════════════════════════════ */
   .panel {
     background: var(--white);
-    border-radius: 14px;
+    border-radius: 10px;
     border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(10,124,110,.05);
+    display: flex; flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 2px 12px rgba(10,124,110,.06);
+    flex: 1;
+    min-height: 0;
     opacity: 0;
-    animation: rise .45s ease forwards;
-    transition: box-shadow .2s;
+    animation: rise .4s ease forwards;
   }
-  .panel:hover { box-shadow: 0 6px 24px rgba(10,124,110,.1); }
-  .panel:nth-child(1) { animation-delay: .05s; }
-  .panel:nth-child(2) { animation-delay: .1s; }
-  .panel:nth-child(3) { animation-delay: .15s; }
-  .panel:nth-child(4) { animation-delay: .2s; }
-  .panel:nth-child(5) { animation-delay: .25s; grid-column: span 2; }
+  .col-left  .panel:nth-child(1) { animation-delay: .04s; }
+  .col-left  .panel:nth-child(2) { animation-delay: .09s; }
+  .col-right .panel:nth-child(1) { animation-delay: .13s; }
+  .col-right .panel:nth-child(2) { animation-delay: .17s; }
+  .col-right .panel:nth-child(3) { animation-delay: .21s; }
 
-  /* full-width panels */
-  .full-width { grid-column: span 2; }
+  /* ══ SECTION HEADER ═══════════════════════════ */
+  .section-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 12px; flex-shrink: 0;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: .5px; text-transform: uppercase;
+  }
+  .sh-overall { background: #0A7C6E; color: #fff; }
+  .sh-app     { background: #1A5F8A; color: #fff; }
+  .sh-dash    { background: #6D35A0; color: #fff; }
+  .sh-monitor { background: #A34A08; color: #fff; }
+  .sh-digital { background: #A81919; color: #fff; }
 
-  /* ── TABLE ──────────────────────────────── */
-  .check-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  /* ══ SCROLLABLE TABLE WRAP ════════════════════ */
+  .table-wrap {
+    flex: 1; overflow-y: auto; overflow-x: hidden;
+  }
+  .table-wrap::-webkit-scrollbar { width: 3px; }
+  .table-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* ══ TABLE ════════════════════════════════════ */
+  .check-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  .check-table thead { position: sticky; top: 0; z-index: 2; }
   .check-table thead th {
-    background: var(--sky);
-    padding: 10px 14px;
-    text-align: left;
-    font-size: 11px; font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: .6px;
-    color: var(--sub);
+    background: var(--sky); padding: 6px 10px;
+    text-align: left; font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .5px; color: var(--sub);
     border-bottom: 2px solid var(--border);
   }
-  .check-table tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background .12s;
-    cursor: default;
-  }
+  .check-table tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
   .check-table tbody tr:last-child { border-bottom: none; }
   .check-table tbody tr:hover { background: var(--sky); }
-  .check-table td { padding: 10px 14px; vertical-align: middle; }
+  .check-table td { padding: 6px 10px; vertical-align: middle; }
 
   .app-id {
-    font-size: 10.5px; font-weight: 600;
-    color: var(--sub);
+    font-size: 9.5px; font-weight: 600; color: var(--sub);
     font-family: 'Courier New', monospace;
-    background: var(--sky);
-    padding: 2px 6px; border-radius: 4px;
-    border: 1px solid var(--border);
+    background: var(--sky); padding: 1px 5px;
+    border-radius: 3px; border: 1px solid var(--border); white-space: nowrap;
   }
 
-  /* ── REQUEST BUTTON ─────────────────────── */
+  /* ══ REQUEST BUTTON ═══════════════════════════ */
   .req-btn {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--teal);
-    color: #fff;
-    border: none; border-radius: 6px;
-    padding: 5px 12px;
-    font-family: 'Outfit', sans-serif;
-    font-size: 11.5px; font-weight: 600;
-    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--teal); color: #fff; border: none; border-radius: 5px;
+    padding: 3px 9px; font-family: 'Outfit', sans-serif;
+    font-size: 10.5px; font-weight: 600; cursor: pointer; white-space: nowrap;
     transition: background .15s, transform .1s;
-    white-space: nowrap;
   }
-  .req-btn:hover { background: var(--teal-lt); transform: translateY(-1px); }
+  .req-btn:hover  { background: var(--teal-lt); transform: translateY(-1px); }
   .req-btn:active { transform: translateY(0); }
-  .req-btn.loading { opacity: .7; pointer-events: none; }
+  .req-btn.loading { opacity: .6; pointer-events: none; }
 
-  /* ── STATUS BADGE ───────────────────────── */
+  /* ══ STATUS BADGE ═════════════════════════════ */
   .status-badge {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 3px 10px; border-radius: 20px;
-    font-size: 11px; font-weight: 700;
-    white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 7px; border-radius: 20px;
+    font-size: 10px; font-weight: 700; white-space: nowrap;
   }
-  .badge-pass { background: var(--pass-bg); color: var(--pass); }
-  .badge-fail { background: var(--fail-bg); color: var(--fail); }
-  .badge-pending {
-    background: #FEF3C7; color: #92400E;
-    font-weight: 500; font-style: italic;
-  }
-  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .badge-pass    { background: var(--pass-bg); color: var(--pass); }
+  .badge-fail    { background: var(--fail-bg); color: var(--fail); }
+  .badge-pending { background: #FEF3C7; color: #92400E; font-style: italic; font-weight: 400; }
+  .badge-dot     { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 
-  /* ── LOADING SKELETON ───────────────────── */
-  .skeleton {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.2s infinite;
-    border-radius: 4px;
-    height: 14px;
-    display: inline-block;
-  }
-
-  /* ── SO ON ROW ──────────────────────────── */
-  .so-on-row td {
-    padding: 10px 14px;
-    text-align: center;
-    background: var(--sky);
-  }
+  /* ══ SO ON BUTTON ═════════════════════════════ */
+  .so-on-row td   { padding: 6px 10px; text-align: center; background: var(--sky); }
   .so-on-btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--white);
-    border: 1.5px dashed var(--border);
-    color: var(--sub);
-    padding: 6px 18px;
-    border-radius: 20px;
-    font-family: 'Outfit', sans-serif;
-    font-size: 12px; font-weight: 500;
-    font-style: italic;
-    cursor: pointer;
-    transition: all .18s;
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--white); border: 1.5px dashed var(--border);
+    color: var(--sub); padding: 3px 12px; border-radius: 20px;
+    font-family: 'Outfit', sans-serif; font-size: 10.5px; font-weight: 500;
+    font-style: italic; cursor: pointer; transition: all .18s;
   }
-  .so-on-btn:hover {
-    border-color: var(--teal);
-    color: var(--teal);
-    background: var(--sky);
-    border-style: solid;
-  }
-  .so-on-btn svg { transition: transform .2s; }
+  .so-on-btn:hover { border-color: var(--teal); color: var(--teal); background: var(--sky); border-style: solid; }
   .so-on-btn:hover svg { transform: translateX(3px); }
+  .so-on-btn svg { transition: transform .2s; }
 
-  /* ── ANIMATIONS ─────────────────────────── */
-  @keyframes rise {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes shimmer {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
-  @keyframes spin {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
+  /* ══ SKELETON ═════════════════════════════════ */
+  .skeleton {
+    display: block; height: 11px; border-radius: 3px; width: 85%;
+    background: linear-gradient(90deg,#f0f0f0 25%,#e2e2e2 50%,#f0f0f0 75%);
+    background-size: 200% 100%; animation: shimmer 1.2s infinite;
   }
 
-  ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  /* ══ ANIMATIONS ═══════════════════════════════ */
+  @keyframes rise    { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes spin    { to{transform:rotate(360deg)} }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════
-     TOP HEADER
-═══════════════════════════════ -->
+<!-- ══ HEADER ══════════════════════════════════ -->
 <div class="top-header">
-  <div class="screen-label">Screen 1</div>
-  <div class="brand-row">
-    <div class="brand-left">
-      <div class="brand-icon">DG</div>
-      <div>
-        <div class="brand-name">DigGenie</div>
-        <div class="brand-tagline">One magic click to serve all Digital needs</div>
-      </div>
+  <div class="brand-left">
+    <div class="brand-icon">DG</div>
+    <div>
+      <div class="brand-name">DigGenie</div>
+      <div class="brand-tagline">One magic click to serve all Digital needs</div>
     </div>
-    <div class="brand-right">
-      <div class="status-summary" id="summaryBadge">
-        <div class="sum-dot" style="background:#facc15"></div>
-        <div class="sum-text">Loading checks...</div>
-      </div>
-      <button class="refresh-btn" id="refreshBtn" onclick="loadAll()">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-          <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
-          <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
-        </svg>
-        Refresh All
-      </button>
+  </div>
+  <div class="brand-right">
+    <div class="status-summary" id="summaryBadge">
+      <div class="sum-dot" style="background:#facc15"></div>
+      <div class="sum-text">Loading checks...</div>
     </div>
+    <button class="refresh-btn" id="refreshBtn" onclick="loadAll()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+        <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+        <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+      </svg>
+      Refresh All
+    </button>
   </div>
 </div>
 
-<!-- ═══════════════════════════════
-     PAGE
-═══════════════════════════════ -->
-<div class="page">
-  <div class="main-grid">
+<!-- ══ BODY ════════════════════════════════════ -->
+<div class="body-area">
 
-    <!-- ① OVERALL APPLICATION CHECKOUTS -->
+  <!-- LEFT: Overall + App Checkouts -->
+  <div class="col-left">
+
     <div class="panel">
       <div class="section-head sh-overall">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
         Overall Application Checkouts
       </div>
-      <table class="check-table">
-        <thead>
-          <tr>
-            <th>Application</th>
-            <th>Action</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="overallBody">
-          <tr><td colspan="3"><span class="skeleton" style="width:100%">&nbsp;</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- ② DASHBOARDS -->
-    <div class="panel">
-      <div class="section-head sh-dash">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        Dashboards
+      <div class="table-wrap">
+        <table class="check-table">
+          <thead><tr><th>Application</th><th>Action</th><th>Status</th></tr></thead>
+          <tbody id="overallBody"><tr><td colspan="3"><span class="skeleton"></span></td></tr></tbody>
+        </table>
       </div>
-      <table class="check-table">
-        <thead>
-          <tr>
-            <th>Dashboard</th>
-            <th>Action</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="dashBody">
-          <tr><td colspan="3"><span class="skeleton" style="width:100%">&nbsp;</span></td></tr>
-        </tbody>
-      </table>
     </div>
 
-    <!-- ③ APP BASED CHECKOUTS (full width) -->
-    <div class="panel full-width">
+    <div class="panel">
       <div class="section-head sh-app">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         App Based Checkouts
       </div>
-      <table class="check-table">
-        <thead>
-          <tr>
-            <th>App ID</th>
-            <th>Application Name</th>
-            <th>Action</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="appBody">
-          <tr><td colspan="4"><span class="skeleton" style="width:100%">&nbsp;</span></td></tr>
-        </tbody>
-      </table>
+      <div class="table-wrap">
+        <table class="check-table">
+          <thead><tr><th>App ID</th><th>Application</th><th>Action</th><th>Status</th></tr></thead>
+          <tbody id="appBody"><tr><td colspan="4"><span class="skeleton"></span></td></tr></tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- ④ MONITORING -->
+  </div>
+
+  <!-- RIGHT: Dashboards + Monitoring + Digital Reporting -->
+  <div class="col-right">
+
+    <div class="panel">
+      <div class="section-head sh-dash">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboards
+      </div>
+      <div class="table-wrap">
+        <table class="check-table">
+          <thead><tr><th>Dashboard</th><th>Action</th><th>Status</th></tr></thead>
+          <tbody id="dashBody"><tr><td colspan="3"><span class="skeleton"></span></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
     <div class="panel">
       <div class="section-head sh-monitor">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         Monitoring
       </div>
-      <table class="check-table">
-        <thead>
-          <tr>
-            <th>Monitor</th>
-            <th>Action</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="monitorBody">
-          <tr><td colspan="3"><span class="skeleton" style="width:100%">&nbsp;</span></td></tr>
-        </tbody>
-      </table>
+      <div class="table-wrap">
+        <table class="check-table">
+          <thead><tr><th>Monitor</th><th>Action</th><th>Status</th></tr></thead>
+          <tbody id="monitorBody"><tr><td colspan="3"><span class="skeleton"></span></td></tr></tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- ⑤ DIGITAL REPORTING -->
     <div class="panel">
       <div class="section-head sh-digital">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         Digital Reporting
       </div>
-      <table class="check-table">
-        <thead>
-          <tr>
-            <th>Report</th>
-            <th>Action</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="digitalBody">
-          <tr><td colspan="3"><span class="skeleton" style="width:100%">&nbsp;</span></td></tr>
-        </tbody>
-      </table>
+      <div class="table-wrap">
+        <table class="check-table">
+          <thead><tr><th>Report</th><th>Action</th><th>Status</th></tr></thead>
+          <tbody id="digitalBody"><tr><td colspan="3"><span class="skeleton"></span></td></tr></tbody>
+        </table>
+      </div>
     </div>
 
-  </div><!-- /main-grid -->
-</div><!-- /page -->
+  </div>
+
+</div>
 
 <script>
-// ── HELPERS ─────────────────────────────────────────────────────────────────
+const soOnBtn = (cols) =>
+  `<tr class="so-on-row"><td colspan="${cols}">
+    <button class="so-on-btn">So On......
+      <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </button>
+  </td></tr>`;
 
 function statusBadge(status) {
   if (!status) return `<span class="status-badge badge-pending"><span class="badge-dot"></span>—</span>`;
@@ -418,113 +320,89 @@ function statusBadge(status) {
   return `<span class="status-badge ${cls}"><span class="badge-dot"></span>${status}</span>`;
 }
 
-function reqButton(label, section, name) {
+function reqBtn(section, name) {
   return `<button class="req-btn" onclick="runCheck('${section}','${encodeURIComponent(name)}',this)">
-    <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-    ${label}
+    <svg width="9" height="9" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    Request
   </button>`;
 }
 
 function runCheck(section, name, btn) {
-  // Simulate individual check — finds the status cell in same row and updates it
-  const row = btn.closest('tr');
-  const statusCell = row.querySelector('.status-badge') || row.lastElementChild;
-  btn.classList.add('loading');
-  btn.textContent = '...';
+  const statusEl = btn.closest('tr').querySelector('.status-badge');
+  btn.classList.add('loading'); btn.textContent = '...';
   setTimeout(() => {
     const result = Math.random() > 0.2 ? 'Pass' : 'Fail';
-    statusCell.outerHTML = statusBadge(result);
+    if (statusEl) statusEl.outerHTML = statusBadge(result);
     btn.classList.remove('loading');
-    btn.innerHTML = `<svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg> Request`;
+    btn.innerHTML = `<svg width="9" height="9" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg> Request`;
     updateSummary();
-  }, 800 + Math.random() * 600);
+  }, 700 + Math.random() * 500);
 }
-
-// ── RENDER FUNCTIONS ─────────────────────────────────────────────────────────
 
 function renderOverall(data) {
-  const tbody = document.getElementById('overallBody');
-  tbody.innerHTML = data.map(row => `
-    <tr>
-      <td style="font-weight:500">${row.name}</td>
-      <td>${reqButton('Request', 'overall', row.name)}</td>
-      <td>${statusBadge(row.status)}</td>
-    </tr>`).join('') +
-    `<tr class="so-on-row"><td colspan="3"><button class="so-on-btn">So On...... <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button></td></tr>`;
+  document.getElementById('overallBody').innerHTML =
+    data.map(r => `<tr>
+      <td style="font-weight:500">${r.name}</td>
+      <td>${reqBtn('overall', r.name)}</td>
+      <td>${statusBadge(r.status)}</td>
+    </tr>`).join('') + soOnBtn(3);
 }
 
-function renderDashboards(data) {
-  const tbody = document.getElementById('dashBody');
-  tbody.innerHTML = data.map(row => `
-    <tr>
-      <td style="font-weight:500">${row.name}</td>
-      <td>${reqButton('Request', 'dash', row.name)}</td>
-      <td>${statusBadge(row.status)}</td>
-    </tr>`).join('') +
-    `<tr class="so-on-row"><td colspan="3"><button class="so-on-btn">So On...... <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button></td></tr>`;
+function renderApp(data) {
+  document.getElementById('appBody').innerHTML =
+    data.map(r => `<tr>
+      <td><span class="app-id">${r.app_id}</span></td>
+      <td style="font-weight:500">${r.name}</td>
+      <td>${reqBtn('app', r.name)}</td>
+      <td>${statusBadge(r.status)}</td>
+    </tr>`).join('') + soOnBtn(4);
 }
 
-function renderAppCheckouts(data) {
-  const tbody = document.getElementById('appBody');
-  tbody.innerHTML = data.map(row => `
-    <tr>
-      <td><span class="app-id">${row.app_id}</span></td>
-      <td style="font-weight:500">${row.name}</td>
-      <td>${reqButton('Request', 'app', row.name)}</td>
-      <td>${statusBadge(row.status)}</td>
-    </tr>`).join('') +
-    `<tr class="so-on-row"><td colspan="4"><button class="so-on-btn">So On...... <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button></td></tr>`;
+function renderDash(data) {
+  document.getElementById('dashBody').innerHTML =
+    data.map(r => `<tr>
+      <td style="font-weight:500">${r.name}</td>
+      <td>${reqBtn('dash', r.name)}</td>
+      <td>${statusBadge(r.status)}</td>
+    </tr>`).join('') + soOnBtn(3);
 }
 
-function renderMonitoring(data) {
-  const tbody = document.getElementById('monitorBody');
-  tbody.innerHTML = data.map(row => `
-    <tr>
-      <td style="font-weight:500">${row.name}</td>
-      <td>${reqButton('Request', 'monitor', row.name)}</td>
-      <td>${statusBadge(row.status)}</td>
-    </tr>`).join('') +
-    `<tr class="so-on-row"><td colspan="3"><button class="so-on-btn">So On...... <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button></td></tr>`;
+function renderMonitor(data) {
+  document.getElementById('monitorBody').innerHTML =
+    data.map(r => `<tr>
+      <td style="font-weight:500">${r.name}</td>
+      <td>${reqBtn('monitor', r.name)}</td>
+      <td>${statusBadge(r.status)}</td>
+    </tr>`).join('') + soOnBtn(3);
 }
 
 function renderDigital(data) {
-  const tbody = document.getElementById('digitalBody');
-  tbody.innerHTML = data.map(row => `
-    <tr>
-      <td style="font-weight:500">${row.name}</td>
-      <td>${reqButton('Request', 'digital', row.name)}</td>
-      <td>${statusBadge(row.status)}</td>
-    </tr>`).join('') +
-    `<tr class="so-on-row"><td colspan="3"><button class="so-on-btn">So On...... <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button></td></tr>`;
+  document.getElementById('digitalBody').innerHTML =
+    data.map(r => `<tr>
+      <td style="font-weight:500">${r.name}</td>
+      <td>${reqBtn('digital', r.name)}</td>
+      <td>${statusBadge(r.status)}</td>
+    </tr>`).join('') + soOnBtn(3);
 }
 
-// ── SUMMARY ──────────────────────────────────────────────────────────────────
-
 function updateSummary() {
-  const all = document.querySelectorAll('.status-badge');
   let pass = 0, fail = 0;
-  all.forEach(b => {
+  document.querySelectorAll('.status-badge').forEach(b => {
     if (b.classList.contains('badge-pass')) pass++;
     if (b.classList.contains('badge-fail')) fail++;
   });
   const total = pass + fail;
-  const dot = fail > 0 ? '#ef4444' : '#22c55e';
+  const dot  = fail > 0 ? '#ef4444' : '#22c55e';
   const text = total > 0 ? `${pass} Pass · ${fail} Fail` : 'Loading checks...';
   document.getElementById('summaryBadge').innerHTML =
     `<div class="sum-dot" style="background:${dot}"></div><div class="sum-text">${text}</div>`;
 }
 
-// ── LOAD ALL DATA ─────────────────────────────────────────────────────────────
-
 async function loadAll() {
   const btn = document.getElementById('refreshBtn');
-  btn.classList.add('spinning');
-  btn.disabled = true;
-
+  btn.classList.add('spinning'); btn.disabled = true;
   try {
-
-    // ── MOCK DATA (when Flask is not running) ──
-    // In production replace this block with: const res = await fetch('/api/all'); const d = await res.json();
+    // ── MOCK DATA — replace with: const res = await fetch('/api/all'); const d = await res.json();
     const d = {
       overall_checkouts: [
         {name:"BAM Bundle",status:"Pass"},{name:"Membership Bundle",status:"Pass"},
@@ -558,24 +436,19 @@ async function loadAll() {
         {name:"Incident Inventory",status:"Pass"},{name:"Open Task",status:"Pass"}
       ]
     };
-
     renderOverall(d.overall_checkouts);
-    renderDashboards(d.dashboards);
-    renderAppCheckouts(d.app_checkouts);
-    renderMonitoring(d.monitoring);
+    renderApp(d.app_checkouts);
+    renderDash(d.dashboards);
+    renderMonitor(d.monitoring);
     renderDigital(d.digital_reporting);
     updateSummary();
-  } catch (err) {
-    console.error('Failed to load data:', err);
+  } catch(err) {
+    console.error('Load failed:', err);
   } finally {
-    setTimeout(() => {
-      btn.classList.remove('spinning');
-      btn.disabled = false;
-    }, 600);
+    setTimeout(() => { btn.classList.remove('spinning'); btn.disabled = false; }, 600);
   }
 }
 
-// Load on page ready
 document.addEventListener('DOMContentLoaded', loadAll);
 </script>
 </body>
