@@ -1,1 +1,3 @@
 https://api-gateway-ssl-svc.hcscint.net/api/now/table/sc_task?number=SCTASK2333086&sysparm_display_value=true&sysparm_fields=number,variables.requested_by,variables.requested_for,variables.requested_for.user_name,variables.requested_for_title,variables.manager
+
+https://api-gateway-ssl-svc.hcscint.net/api/now/table/incident?sysparm_query=number=INC0010023&sysparm_display_value=true&sysparm_fields=number,state,short_description,description,assignment_group,assigned_to,caller_id,caller_id.user_name,opened_by,opened_by.user_name
